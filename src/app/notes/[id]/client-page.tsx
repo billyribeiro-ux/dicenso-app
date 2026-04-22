@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useRouteEntityId } from '@/hooks/use-route-entity-id';
 import Link from 'next/link';
 import { TiptapEditor } from '@/components/editor/tiptap-editor';
 import { notesRepo, noteVersionsRepo } from '@/lib/repositories';
@@ -26,13 +27,8 @@ import { cn } from '@/lib/utils';
 type Props = { initialId?: string };
 
 export default function NoteDetailClientPage({ initialId }: Props = {}) {
-  const params = useParams<{ id: string }>();
   const router = useRouter();
-  // Prefer the live client-side param (updated by Next router after
-  // navigation). Fall back to the server-resolved initialId when the router
-  // hasn't populated yet. Ignore the static-export placeholder ("_").
-  const rawId = params?.id ?? initialId;
-  const id = rawId && rawId !== '_' ? rawId : undefined;
+  const id = useRouteEntityId('notes', initialId);
 
   const [note, setNote] = React.useState<Note | null>(null);
   const [title, setTitle] = React.useState('');

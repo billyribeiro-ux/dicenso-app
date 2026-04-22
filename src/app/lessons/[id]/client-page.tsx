@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useRouteEntityId } from '@/hooks/use-route-entity-id';
 import Link from 'next/link';
 import { lessonsRepo } from '@/lib/repositories';
 import { Input } from '@/components/ui/input';
@@ -17,10 +18,8 @@ import type { Lesson } from '@/types';
 type Props = { initialId?: string };
 
 export default function LessonDetailClientPage({ initialId }: Props = {}) {
-  const params = useParams<{ id: string }>();
   const router = useRouter();
-  const rawId = params?.id ?? initialId;
-  const id = rawId && rawId !== '_' ? rawId : undefined;
+  const id = useRouteEntityId('lessons', initialId);
 
   const [lesson, setLesson] = React.useState<Lesson | null>(null);
   const [title, setTitle] = React.useState('');

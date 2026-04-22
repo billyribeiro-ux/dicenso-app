@@ -134,15 +134,19 @@ export default function TasksPage() {
       ) : (
         <div className="space-y-2" role="list" aria-label="Your tasks">
           {filtered.map((task) => (
-            <Link
+            <div
               key={task.id}
-              href={`/tasks/${task.id}`}
               role="listitem"
               className={cn(
-                'flex items-center gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]',
+                'relative flex items-center gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]',
                 task.status === 'done' && 'opacity-60 bg-muted/50 hover:bg-muted'
               )}
             >
+              <Link
+                href={`/tasks/${task.id}`}
+                className="absolute inset-0 z-0 rounded-lg"
+                aria-label={`Open task: ${task.title}`}
+              />
               <button
                 type="button"
                 onClick={(e) => {
@@ -151,7 +155,7 @@ export default function TasksPage() {
                   void toggleTask(task);
                 }}
                 className={cn(
-                  'flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors',
+                  'relative z-10 flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors',
                   task.status === 'done'
                     ? 'bg-primary border-primary text-primary-foreground'
                     : 'border-input hover:border-primary'
@@ -164,7 +168,7 @@ export default function TasksPage() {
                   </svg>
                 )}
               </button>
-              <div className="min-w-0 flex-1">
+              <div className="pointer-events-none relative z-10 min-w-0 flex-1">
                 <p className={cn('text-sm', task.status === 'done' && 'line-through text-muted-foreground')}>
                   {task.title}
                 </p>
@@ -181,10 +185,13 @@ export default function TasksPage() {
                   {task.estimateMinutes && <span>{task.estimateMinutes}m</span>}
                 </div>
               </div>
-              <Badge variant="secondary" className={cn('shrink-0 text-[10px] capitalize', priorityColor[task.priority])}>
+              <Badge
+                variant="secondary"
+                className={cn('pointer-events-none relative z-10 shrink-0 text-[10px] capitalize', priorityColor[task.priority])}
+              >
                 {task.priority}
               </Badge>
-            </Link>
+            </div>
           ))}
         </div>
       )}
