@@ -42,6 +42,9 @@ const baseConfig: NextConfig = {
   reactStrictMode: true,
   images: { unoptimized: true },
   typescript: { ignoreBuildErrors: false },
+  // Hide the Next.js dev tools indicator ("nextjs-portal" floating badge)
+  // so it doesn't sit in the bottom-left of the window during development.
+  devIndicators: false,
 };
 
 const nextConfig: NextConfig = isStaticExport

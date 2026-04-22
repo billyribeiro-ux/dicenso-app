@@ -115,6 +115,24 @@
 }
 
 @layer base {
+  /*
+   * Next.js injects a <nextjs-portal> custom element for dev-only UI (overlay,
+   * dev tools indicator). Make sure the empty host never takes flow space or
+   * intercepts pointer events. Its actual children are `position: fixed` and
+   * keep working as before.
+   */
+  nextjs-portal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  nextjs-portal > * {
+    pointer-events: auto;
+  }
+
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *,
