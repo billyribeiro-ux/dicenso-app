@@ -4,6 +4,11 @@ export function generateStaticParams() {
   return [{ id: '_' }];
 }
 
-export default function TaskDetailPage() {
-  return <TaskDetailClientPage />;
+export default async function TaskDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <TaskDetailClientPage initialId={id} />;
 }

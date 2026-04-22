@@ -13,10 +13,13 @@ import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Task } from '@/types';
 
-export default function TaskDetailClientPage() {
+type Props = { initialId?: string };
+
+export default function TaskDetailClientPage({ initialId }: Props = {}) {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = params?.id;
+  const rawId = params?.id ?? initialId;
+  const id = rawId && rawId !== '_' ? rawId : undefined;
 
   const [task, setTask] = React.useState<Task | null>(null);
   const [title, setTitle] = React.useState('');

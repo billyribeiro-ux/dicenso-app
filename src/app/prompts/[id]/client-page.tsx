@@ -12,10 +12,13 @@ import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 import { ArrowLeft, Save, Trash2, Copy } from 'lucide-react';
 import type { Prompt } from '@/types';
 
-export default function PromptDetailClientPage() {
+type Props = { initialId?: string };
+
+export default function PromptDetailClientPage({ initialId }: Props = {}) {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = params?.id;
+  const rawId = params?.id ?? initialId;
+  const id = rawId && rawId !== '_' ? rawId : undefined;
 
   const [prompt, setPrompt] = React.useState<Prompt | null>(null);
   const [title, setTitle] = React.useState('');

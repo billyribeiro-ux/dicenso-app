@@ -23,10 +23,16 @@ import {
 import type { Note, NoteVersion } from '@/types';
 import { cn } from '@/lib/utils';
 
-export default function NoteDetailClientPage() {
+type Props = { initialId?: string };
+
+export default function NoteDetailClientPage({ initialId }: Props = {}) {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = params?.id;
+  // Prefer the live client-side param (updated by Next router after
+  // navigation). Fall back to the server-resolved initialId when the router
+  // hasn't populated yet. Ignore the static-export placeholder ("_").
+  const rawId = params?.id ?? initialId;
+  const id = rawId && rawId !== '_' ? rawId : undefined;
 
   const [note, setNote] = React.useState<Note | null>(null);
   const [title, setTitle] = React.useState('');

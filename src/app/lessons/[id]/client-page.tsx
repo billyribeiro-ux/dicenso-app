@@ -14,10 +14,13 @@ import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Lesson } from '@/types';
 
-export default function LessonDetailClientPage() {
+type Props = { initialId?: string };
+
+export default function LessonDetailClientPage({ initialId }: Props = {}) {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = params?.id;
+  const rawId = params?.id ?? initialId;
+  const id = rawId && rawId !== '_' ? rawId : undefined;
 
   const [lesson, setLesson] = React.useState<Lesson | null>(null);
   const [title, setTitle] = React.useState('');
