@@ -204,11 +204,11 @@ export function CommandPalette() {
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
       <DialogTitle className="sr-only">Command Palette</DialogTitle>
-      <CommandInput placeholder="Type a command or search..." />
+      <CommandInput placeholder="Jump somewhere or create…" />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Create">
-          {createCommands.map((cmd) => (
+        <CommandGroup heading="Navigate">
+          {navigationCommands.map((cmd) => (
             <CommandItem
               key={cmd.id}
               onSelect={() => run(cmd.action)}
@@ -225,8 +225,8 @@ export function CommandPalette() {
           ))}
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading="Navigate">
-          {navigationCommands.map((cmd) => (
+        <CommandGroup heading="Create">
+          {createCommands.map((cmd) => (
             <CommandItem
               key={cmd.id}
               onSelect={() => run(cmd.action)}

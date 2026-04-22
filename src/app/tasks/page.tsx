@@ -3,14 +3,13 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { tasksRepo } from '@/lib/repositories';
-import { Button } from '@/components/ui/button';
+import { EntityHubHeader } from '@/components/layout/entity-hub-header';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { formatDate } from '@/lib/utils';
-import { Plus, CheckSquare, Calendar, AlertCircle } from 'lucide-react';
+import { CheckSquare, Calendar } from 'lucide-react';
 import type { Task } from '@/types';
-import { toast } from 'sonner';
 
 const USER_ID = 'local-user';
 
@@ -18,8 +17,10 @@ export default function TasksPage() {
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [filter, setFilter] = React.useState<'all' | 'todo' | 'in_progress' | 'done'>('all');
   const [query, setQuery] = React.useState('');
+  const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
+    setLoaded(false);
     loadTasks();
   }, [filter]);
 
@@ -31,6 +32,7 @@ export default function TasksPage() {
       data = await tasksRepo.getByStatus(USER_ID, filter);
     }
     setTasks(data);
+    setLoaded(true);
   };
 
   const toggleTask = async (task: Task) => {
@@ -57,27 +59,34 @@ export default function TasksPage() {
     urgent: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
   };
 
+  const filterLabels: Record<typeof filter, string> = {
+    all: 'All tasks',
+    todo: 'To do',
+    in_progress: 'In progress',
+    done: 'Done',
+  };
+  const active = tasks.filter((t) => t.status !== 'done').length;
+  const subtitle =
+    tasks.length === 0
+      ? `${filterLabels[filter]} · Nothing here yet.`
+      : `${filterLabels[filter]} · ${active} active · ${tasks.length} in this view`;
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
-          <p className="text-muted-foreground">{tasks.filter((t) => t.status !== 'done').length} active</p>
-        </div>
-        <Link href="/tasks/new">
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            New Task
-          </Button>
-        </Link>
-      </div>
+      <EntityHubHeader
+        title="Tasks"
+        subtitle={subtitle}
+        newHref="/tasks/new"
+        newLabel="New task"
+      />
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Input
-          placeholder="Search tasks..."
+          placeholder="Filter tasks…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="sm:max-w-xs"
+          className="sm:max-w-md"
+          aria-label="Filter tasks"
         />
         <div className="flex gap-2">
           {(['all', 'todo', 'in_progress', 'done'] as const).map((f) => (
@@ -97,31 +106,43 @@ export default function TasksPage() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-20">
-          <CheckSquare className="h-10 w-10 text-muted-foreground" />
-          <p className="mt-4 text-muted-foreground">
-            {query ? 'No tasks match your search' : 'No tasks yet'}
+      {!loaded ? (
+        <div className="space-y-2" aria-busy="true" aria-label="Loading tasks">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="h-14 animate-pulse rounded-lg border bg-muted/50" />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16">
+          <CheckSquare className="h-10 w-10 text-muted-foreground" aria-hidden />
+          <p className="mt-4 text-center text-muted-foreground">
+            {query ? 'No tasks match your filter.' : 'No tasks in this view.'}
           </p>
           {!query && (
-            <Link href="/tasks/new">
-              <Button variant="link">Create your first task</Button>
-            </Link>
+            <p className="mt-1 max-w-sm text-center text-sm text-muted-foreground">
+              Add work with <span className="font-medium text-foreground">New task</span> when you are ready.
+            </p>
           )}
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2" role="list" aria-label="Your tasks">
           {filtered.map((task) => (
             <Link
               key={task.id}
               href={`/tasks/${task.id}`}
+              role="listitem"
               className={cn(
-                'flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent',
+                'flex items-center gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/60',
                 task.status === 'done' && 'opacity-60'
               )}
             >
               <button
-                onClick={() => toggleTask(task)}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  void toggleTask(task);
+                }}
                 className={cn(
                   'flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors',
                   task.status === 'done'

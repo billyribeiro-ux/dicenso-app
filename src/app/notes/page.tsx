@@ -4,17 +4,9 @@ import * as React from 'react';
 import Link from 'next/link';
 import { notesRepo } from '@/lib/repositories';
 import { formatRelative, cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { EntityHubHeader } from '@/components/layout/entity-hub-header';
 import { Input } from '@/components/ui/input';
-import {
-  FileText,
-  Plus,
-  Star,
-  Pin,
-  MoreHorizontal,
-  Archive,
-  Trash2,
-} from 'lucide-react';
+import { FileText, Star, Pin, Archive, Trash2 } from 'lucide-react';
 import type { Note } from '@/types';
 import { toast } from 'sonner';
 
@@ -24,8 +16,10 @@ export default function NotesPage() {
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [query, setQuery] = React.useState('');
   const [filter, setFilter] = React.useState<'all' | 'pinned' | 'favorites' | 'archived'>('all');
+  const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
+    setLoaded(false);
     loadNotes();
   }, [filter]);
 
@@ -45,6 +39,7 @@ export default function NotesPage() {
         data = await notesRepo.getByUser(USER_ID);
     }
     setNotes(data);
+    setLoaded(true);
   };
 
   const filtered = query
@@ -85,27 +80,35 @@ export default function NotesPage() {
     await loadNotes();
   };
 
+  const filterLabel =
+    filter === 'all'
+      ? 'All notes'
+      : filter === 'pinned'
+        ? 'Pinned'
+        : filter === 'favorites'
+          ? 'Favorites'
+          : 'Archived';
+  const subtitle =
+    notes.length === 0
+      ? `${filterLabel} · Nothing here yet.`
+      : `${filterLabel} · ${notes.length} ${notes.length === 1 ? 'note' : 'notes'}`;
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Notes</h1>
-          <p className="text-muted-foreground">{notes.length} notes</p>
-        </div>
-        <Link href="/notes/new">
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            New Note
-          </Button>
-        </Link>
-      </div>
+      <EntityHubHeader
+        title="Notes"
+        subtitle={subtitle}
+        newHref="/notes/new"
+        newLabel="New note"
+      />
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Input
-          placeholder="Search notes..."
+          placeholder="Filter notes…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="sm:max-w-xs"
+          className="sm:max-w-md"
+          aria-label="Filter notes"
         />
         <div className="flex gap-2">
           {(['all', 'pinned', 'favorites', 'archived'] as const).map((f) => (
@@ -125,25 +128,36 @@ export default function NotesPage() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-20">
-          <FileText className="h-10 w-10 text-muted-foreground" />
-          <p className="mt-4 text-muted-foreground">
-            {query ? 'No notes match your search' : 'No notes yet'}
+      {!loaded ? (
+        <div
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          aria-busy="true"
+          aria-label="Loading notes"
+        >
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-44 animate-pulse rounded-lg border bg-muted/50" />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16">
+          <FileText className="h-10 w-10 text-muted-foreground" aria-hidden />
+          <p className="mt-4 text-center text-muted-foreground">
+            {query ? 'No notes match your filter.' : 'No notes in this view.'}
           </p>
           {!query && (
-            <Link href="/notes/new">
-              <Button variant="link">Create your first note</Button>
-            </Link>
+            <p className="mt-1 max-w-sm text-center text-sm text-muted-foreground">
+              Use <span className="font-medium text-foreground">New note</span> when you want a blank page.
+            </p>
           )}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list" aria-label="Your notes">
           {filtered.map((note) => (
             <Link
               key={note.id}
               href={`/notes/${note.id}`}
-              className="group relative flex flex-col rounded-lg border bg-card p-4 transition-colors hover:bg-accent"
+              role="listitem"
+              className="group relative flex flex-col rounded-lg border bg-card p-4 transition-colors hover:bg-accent/60"
             >
               <div className="flex items-start justify-between gap-2">
                 <h3 className="line-clamp-2 font-medium group-hover:underline">{note.title}</h3>

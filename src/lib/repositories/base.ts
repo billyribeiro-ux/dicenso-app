@@ -10,13 +10,17 @@ export interface QueryOptions {
 }
 
 export class BaseRepository<T extends BaseEntity> {
-  private tablePromise: Promise<EntityTable<T, 'id'>>;
+  private tablePromise: Promise<EntityTable<T, 'id'>> | null = null;
+  private readonly tableFactory: () => Promise<EntityTable<T, 'id'>>;
 
   constructor(tableFactory: () => Promise<EntityTable<T, 'id'>>) {
-    this.tablePromise = tableFactory();
+    this.tableFactory = tableFactory;
   }
 
   protected async table(): Promise<EntityTable<T, 'id'>> {
+    if (!this.tablePromise) {
+      this.tablePromise = this.tableFactory();
+    }
     return this.tablePromise;
   }
 

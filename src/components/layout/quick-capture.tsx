@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -40,6 +41,7 @@ const USER_ID = 'local-user';
 const WORKSPACE_ID = 'default';
 
 export function QuickCapture() {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [type, setType] = React.useState<CaptureType>('note');
   const [title, setTitle] = React.useState('');
@@ -136,6 +138,15 @@ export function QuickCapture() {
       setTitle('');
       setBody('');
       setOpen(false);
+
+      const hubByType: Record<CaptureType, string> = {
+        note: '/notes',
+        task: '/tasks',
+        prompt: '/prompts',
+        lesson: '/lessons',
+        brainstorm: '/brainstorm',
+      };
+      router.push(hubByType[type]);
     } catch {
       toast.error('Failed to capture');
     }

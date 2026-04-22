@@ -97,9 +97,10 @@ export default function SearchPage() {
             Tasks
           </h2>
           {results.tasks.map((task) => (
-            <div
+            <Link
               key={task.id}
-              className="flex items-center gap-3 rounded-lg border p-3"
+              href={`/tasks/${task.id}`}
+              className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
             >
               <CheckSquare className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -108,7 +109,7 @@ export default function SearchPage() {
                   {task.status.replace('_', ' ')}
                 </Badge>
               </div>
-            </div>
+            </Link>
           ))}
         </section>
       )}
@@ -119,16 +120,17 @@ export default function SearchPage() {
             Prompts
           </h2>
           {results.prompts.map((prompt) => (
-            <div
+            <Link
               key={prompt.id}
-              className="flex items-center gap-3 rounded-lg border p-3"
+              href={`/prompts/${prompt.id}`}
+              className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
             >
               <Terminal className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">{prompt.title}</p>
                 <p className="line-clamp-1 text-xs text-muted-foreground">{prompt.body}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </section>
       )}
@@ -139,9 +141,10 @@ export default function SearchPage() {
             Lessons
           </h2>
           {results.lessons.map((lesson) => (
-            <div
+            <Link
               key={lesson.id}
-              className="flex items-center gap-3 rounded-lg border p-3"
+              href={`/lessons/${lesson.id}`}
+              className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
             >
               <BookOpen className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -150,7 +153,7 @@ export default function SearchPage() {
                   {lesson.status.replace('_', ' ')}
                 </Badge>
               </div>
-            </div>
+            </Link>
           ))}
         </section>
       )}

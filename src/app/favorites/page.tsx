@@ -70,9 +70,10 @@ export default function FavoritesPage() {
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             {prompts.map((prompt) => (
-              <div
+              <Link
                 key={prompt.id}
-                className="rounded-lg border p-4 transition-colors hover:bg-accent"
+                href={`/prompts/${prompt.id}`}
+                className="block rounded-lg border p-4 transition-colors hover:bg-accent/60"
               >
                 <div className="flex items-center gap-2">
                   <Terminal className="h-4 w-4 text-muted-foreground" />
@@ -81,7 +82,7 @@ export default function FavoritesPage() {
                 <p className="mt-1 line-clamp-3 text-sm text-muted-foreground whitespace-pre-wrap">
                   {prompt.body}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         )}
