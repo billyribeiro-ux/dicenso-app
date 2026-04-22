@@ -1,0 +1,159 @@
+'use client';
+
+import * as React from 'react';
+import Link from 'next/link';
+import { notesRepo, tasksRepo, promptsRepo, lessonsRepo } from '@/lib/repositories';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Search, FileText, CheckSquare, Terminal, BookOpen } from 'lucide-react';
+import type { Note, Task, Prompt, Lesson } from '@/types';
+
+const USER_ID = 'local-user';
+
+export default function SearchPage() {
+  const [query, setQuery] = React.useState('');
+  const [results, setResults] = React.useState<{
+    notes: Note[];
+    tasks: Task[];
+    prompts: Prompt[];
+    lessons: Lesson[];
+  }>({ notes: [], tasks: [], prompts: [], lessons: [] });
+
+  React.useEffect(() => {
+    if (query.trim().length < 2) {
+      setResults({ notes: [], tasks: [], prompts: [], lessons: [] });
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const [notes, tasks, prompts, lessons] = await Promise.all([
+        notesRepo.search(USER_ID, query),
+        tasksRepo.search(USER_ID, query),
+        promptsRepo.search(USER_ID, query),
+        lessonsRepo.search(USER_ID, query),
+      ]);
+      setResults({ notes, tasks, prompts, lessons });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const total =
+    results.notes.length +
+    results.tasks.length +
+    results.prompts.length +
+    results.lessons.length;
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Search</h1>
+        <p className="text-muted-foreground">
+          {query.trim().length < 2 ? 'Type to search across your vault' : `${total} results`}
+        </p>
+      </div>
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          placeholder="Search notes, tasks, prompts, lessons..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="pl-9"
+          autoFocus
+        />
+      </div>
+
+      {query.trim().length >= 2 && total === 0 && (
+        <div className="py-12 text-center text-muted-foreground">No results found</div>
+      )}
+
+      {results.notes.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Notes
+          </h2>
+          {results.notes.map((note) => (
+            <Link
+              key={note.id}
+              href={`/notes/${note.id}`}
+              className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent"
+            >
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium">{note.title}</p>
+                {note.plainTextExtract && (
+                  <p className="line-clamp-1 text-xs text-muted-foreground">
+                    {note.plainTextExtract}
+                  </p>
+                )}
+              </div>
+            </Link>
+          ))}
+        </section>
+      )}
+
+      {results.tasks.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Tasks
+          </h2>
+          {results.tasks.map((task) => (
+            <div
+              key={task.id}
+              className="flex items-center gap-3 rounded-lg border p-3"
+            >
+              <CheckSquare className="h-4 w-4 text-muted-foreground" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium">{task.title}</p>
+                <Badge variant="secondary" className="mt-1 text-[10px] capitalize">
+                  {task.status.replace('_', ' ')}
+                </Badge>
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {results.prompts.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Prompts
+          </h2>
+          {results.prompts.map((prompt) => (
+            <div
+              key={prompt.id}
+              className="flex items-center gap-3 rounded-lg border p-3"
+            >
+              <Terminal className="h-4 w-4 text-muted-foreground" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium">{prompt.title}</p>
+                <p className="line-clamp-1 text-xs text-muted-foreground">{prompt.body}</p>
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {results.lessons.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Lessons
+          </h2>
+          {results.lessons.map((lesson) => (
+            <div
+              key={lesson.id}
+              className="flex items-center gap-3 rounded-lg border p-3"
+            >
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium">{lesson.title}</p>
+                <Badge variant="secondary" className="mt-1 text-[10px] capitalize">
+                  {lesson.status.replace('_', ' ')}
+                </Badge>
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+    </div>
+  );
+}

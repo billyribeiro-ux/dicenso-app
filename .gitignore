@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js build output
+.next/
+out/
+
+# Tauri build output
+src-tauri/target/
+src-tauri/gen/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+console-*.log
+
+# Playwright / MCP artifacts
+.playwright-mcp/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Unused Prisma schema (project uses Dexie/IndexedDB)
+prisma/
+
+# Coverage
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Temporary files
+*.tmp
+*.temp
