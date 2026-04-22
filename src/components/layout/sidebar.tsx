@@ -21,6 +21,7 @@ import {
   Command,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface NavItem {
   href: string;
@@ -45,6 +46,69 @@ const secondaryNav: NavItem[] = [
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
+function NavLink({
+  item,
+  isActive,
+  collapsed,
+  onClick,
+}: {
+  item: NavItem;
+  isActive: boolean;
+  collapsed: boolean;
+  onClick?: () => void;
+}) {
+  const content = (
+    <Link
+      href={item.href}
+      onClick={onClick}
+      aria-current={isActive ? 'page' : undefined}
+      className={cn(
+        'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all active:scale-[0.98]',
+        isActive
+          ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm ring-1 ring-border/50'
+          : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+        collapsed && 'justify-center px-2 ring-0'
+      )}
+    >
+      <item.icon
+        className={cn(
+          'h-4 w-4 shrink-0 transition-colors',
+          isActive ? 'text-sidebar-accent-foreground' : 'text-muted-foreground group-hover:text-sidebar-accent-foreground'
+        )}
+        aria-hidden="true"
+      />
+      {!collapsed && (
+        <>
+          <span className="flex-1 truncate">{item.label}</span>
+          {item.shortcut && (
+            <kbd className="hidden rounded border bg-background/50 px-1.5 font-mono text-[10px] text-muted-foreground shadow-sm xl:inline-block">
+              ⌘{item.shortcut}
+            </kbd>
+          )}
+        </>
+      )}
+    </Link>
+  );
+
+  if (collapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{content}</TooltipTrigger>
+        <TooltipContent side="right" sideOffset={12} className="flex items-center gap-2">
+          {item.label}
+          {item.shortcut && (
+            <kbd className="rounded border border-border/50 bg-muted px-1 font-mono text-[10px] text-muted-foreground">
+              ⌘{item.shortcut}
+            </kbd>
+          )}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return content;
+}
+
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = React.useState(false);
@@ -52,17 +116,25 @@ export function Sidebar() {
   const sidebarRef = React.useRef<HTMLElement>(null);
   const lastFocusedRef = React.useRef<HTMLElement | null>(null);
 
-  // Load collapsed state
-  React.useEffect(() => {
-    const saved = localStorage.getItem('dicenso-sidebar-collapsed');
-    if (saved) setCollapsed(saved === 'true');
-  }, []);
-
   const toggleCollapse = () => {
     const next = !collapsed;
     setCollapsed(next);
     localStorage.setItem('dicenso-sidebar-collapsed', String(next));
+    if (next) {
+      document.documentElement.setAttribute('data-sidebar-collapsed', 'true');
+    } else {
+      document.documentElement.removeAttribute('data-sidebar-collapsed');
+    }
   };
+
+  // Load collapsed state
+  React.useEffect(() => {
+    const saved = localStorage.getItem('dicenso-sidebar-collapsed');
+    if (saved === 'true') {
+      setCollapsed(true);
+      document.documentElement.setAttribute('data-sidebar-collapsed', 'true');
+    }
+  }, []);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
@@ -165,81 +237,64 @@ export function Sidebar() {
         </div>
 
         {/* Quick Capture */}
-        <div className="px-3 py-2">
-          <Button
-            variant="outline"
-            className={cn(
-              'w-full justify-start gap-2 text-muted-foreground',
-              collapsed && 'justify-center px-2'
-            )}
-            onClick={() => {
-              window.dispatchEvent(new CustomEvent('open-quick-capture'));
-            }}
-          >
-            <Inbox className="h-4 w-4 shrink-0" />
-            {!collapsed && (
-              <>
-                <span className="flex-1 text-left">Quick Capture</span>
-                <kbd className="hidden rounded border bg-muted px-1.5 font-mono text-[10px] xl:inline-block">
+        <div className="px-3 py-3">
+          {collapsed ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="default"
+                  size="icon"
+                  className="w-full shadow-sm"
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-quick-capture'))}
+                >
+                  <Inbox className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={12} className="flex items-center gap-2">
+                Quick Capture
+                <kbd className="rounded border border-border/50 bg-muted px-1 font-mono text-[10px] text-muted-foreground">
                   ⌘⇧N
                 </kbd>
-              </>
-            )}
-          </Button>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <Button
+              variant="default"
+              className="w-full justify-start gap-3 shadow-sm"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-quick-capture'))}
+            >
+              <Inbox className="h-4 w-4 shrink-0" />
+              <span className="flex-1 text-left">Quick Capture</span>
+              <kbd className="hidden rounded border border-primary-foreground/20 bg-primary/10 px-1.5 font-mono text-[10px] text-primary-foreground xl:inline-block">
+                ⌘⇧N
+              </kbd>
+            </Button>
+          )}
         </div>
 
         {/* Primary Nav */}
-        <nav className="flex-1 space-y-1 px-2 py-2" aria-label="Primary">
+        <nav className="flex-1 space-y-0.5 px-3 py-2" aria-label="Primary">
           {primaryNav.map((item) => (
-            <Link
+            <NavLink
               key={item.href}
-              href={item.href}
+              item={item}
+              isActive={isActive(item.href)}
+              collapsed={collapsed}
               onClick={() => setMobileOpen(false)}
-              aria-current={isActive(item.href) ? 'page' : undefined}
-              className={cn(
-                'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-                isActive(item.href)
-                  ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-                collapsed && 'justify-center px-2'
-              )}
-              title={item.label}
-            >
-              <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {!collapsed && (
-                <>
-                  <span className="flex-1 truncate">{item.label}</span>
-                  {item.shortcut && (
-                    <kbd className="hidden rounded border bg-muted px-1.5 font-mono text-[10px] xl:inline-block">
-                      ⌘{item.shortcut}
-                    </kbd>
-                  )}
-                </>
-              )}
-            </Link>
+            />
           ))}
         </nav>
 
         {/* Secondary Nav */}
-        <nav className="space-y-1 border-t px-2 py-2" aria-label="Secondary">
+        <nav className="space-y-0.5 border-t px-3 py-3" aria-label="Secondary">
           {secondaryNav.map((item) => (
-            <Link
+            <NavLink
               key={item.href}
-              href={item.href}
+              item={item}
+              isActive={isActive(item.href)}
+              collapsed={collapsed}
               onClick={() => setMobileOpen(false)}
-              aria-current={isActive(item.href) ? 'page' : undefined}
-              className={cn(
-                'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-                isActive(item.href)
-                  ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-                collapsed && 'justify-center px-2'
-              )}
-              title={item.label}
-            >
-              <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {!collapsed && <span className="truncate">{item.label}</span>}
-            </Link>
+            />
           ))}
         </nav>
 

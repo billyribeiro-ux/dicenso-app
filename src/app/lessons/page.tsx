@@ -117,15 +117,21 @@ export default function LessonsPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16">
-          <BookOpen className="h-10 w-10 text-muted-foreground" aria-hidden />
-          <p className="mt-4 text-center text-muted-foreground">
-            {query ? 'No lessons match your filter.' : 'No lessons in this view.'}
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-16 transition-colors">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
+            <BookOpen className="h-6 w-6 text-muted-foreground" aria-hidden />
+          </div>
+          <h3 className="mt-4 font-medium">{query ? 'No matches found' : 'No lessons yet'}</h3>
+          <p className="mt-1 text-center text-sm text-muted-foreground">
+            {query ? 'Try adjusting your filter or search terms.' : 'Document what you learn to build your knowledge base.'}
           </p>
           {!query && (
-            <p className="mt-1 max-w-sm text-center text-sm text-muted-foreground">
-              Start a track with <span className="font-medium text-foreground">New lesson</span> when you are ready.
-            </p>
+            <Button variant="outline" className="mt-6" asChild>
+              <Link href="/lessons/new">
+                <Plus className="mr-2 h-4 w-4" />
+                New Lesson
+              </Link>
+            </Button>
           )}
         </div>
       ) : (
@@ -137,7 +143,7 @@ export default function LessonsPage() {
                 key={lesson.id}
                 href={`/lessons/${lesson.id}`}
                 role="listitem"
-                className="flex flex-col rounded-lg border bg-card p-4 transition-colors hover:bg-accent/60"
+                className="group flex flex-col rounded-lg border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]"
               >
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-medium">{lesson.title}</h3>

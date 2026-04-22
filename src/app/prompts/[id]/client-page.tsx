@@ -89,33 +89,33 @@ export default function PromptDetailClientPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 border-b pb-4">
         <Link href="/prompts">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="h-8 w-8">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold">Edit Prompt</h1>
+        <h1 className="text-xl font-semibold tracking-tight">Edit Prompt</h1>
         <div className="flex-1" />
-        <Button variant="ghost" size="sm" onClick={copyToClipboard} className="gap-1">
+        <Button variant="outline" size="sm" onClick={copyToClipboard} className="h-8 gap-1 shadow-sm">
           <Copy className="h-4 w-4" />
           Copy
         </Button>
-        <Button variant="ghost" size="icon" onClick={handleDelete} className="text-destructive">
+        <Button variant="ghost" size="icon" onClick={handleDelete} className="h-8 w-8 text-destructive">
           <Trash2 className="h-4 w-4" />
         </Button>
-        <Button onClick={handleSave} disabled={saving} className="gap-2">
+        <Button onClick={handleSave} disabled={saving} className="h-8 gap-2 shadow-sm">
           <Save className="h-4 w-4" />
           Save
         </Button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6 pt-2">
         <Input
           placeholder="Prompt title..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="text-lg"
+          className="h-auto border-0 bg-transparent px-0 text-3xl font-semibold tracking-tight shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0"
         />
         <Input
           placeholder="Category..."

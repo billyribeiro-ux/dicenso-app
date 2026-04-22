@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Sidebar />
           <main
             id="main-content"
-            className="min-h-screen transition-all duration-200 lg:pl-[var(--spacing-sidebar)]"
+            className="min-h-screen transition-all duration-200 lg:pl-[var(--spacing-sidebar-current)]"
           >
             <ErrorBoundary>
               <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

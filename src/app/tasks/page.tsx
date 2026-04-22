@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { formatDate } from '@/lib/utils';
-import { CheckSquare, Calendar } from 'lucide-react';
+import { CheckSquare, Calendar, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import type { Task } from '@/types';
 
 const USER_ID = 'local-user';
@@ -113,15 +114,21 @@ export default function TasksPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16">
-          <CheckSquare className="h-10 w-10 text-muted-foreground" aria-hidden />
-          <p className="mt-4 text-center text-muted-foreground">
-            {query ? 'No tasks match your filter.' : 'No tasks in this view.'}
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-16 transition-colors">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
+            <CheckSquare className="h-6 w-6 text-muted-foreground" aria-hidden />
+          </div>
+          <h3 className="mt-4 font-medium">{query ? 'No matches found' : 'No tasks yet'}</h3>
+          <p className="mt-1 text-center text-sm text-muted-foreground">
+            {query ? 'Try adjusting your filter or search terms.' : 'Break down your goals into actionable tasks.'}
           </p>
           {!query && (
-            <p className="mt-1 max-w-sm text-center text-sm text-muted-foreground">
-              Add work with <span className="font-medium text-foreground">New task</span> when you are ready.
-            </p>
+            <Button variant="outline" className="mt-6" asChild>
+              <Link href="/tasks/new">
+                <Plus className="mr-2 h-4 w-4" />
+                New Task
+              </Link>
+            </Button>
           )}
         </div>
       ) : (
@@ -132,8 +139,8 @@ export default function TasksPage() {
               href={`/tasks/${task.id}`}
               role="listitem"
               className={cn(
-                'flex items-center gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/60',
-                task.status === 'done' && 'opacity-60'
+                'flex items-center gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]',
+                task.status === 'done' && 'opacity-60 bg-muted/50 hover:bg-muted'
               )}
             >
               <button

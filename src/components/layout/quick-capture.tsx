@@ -166,10 +166,10 @@ export function QuickCapture() {
                 type="button"
                 onClick={() => setType(t.id)}
                 className={cn(
-                  'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors',
+                  'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all active:scale-[0.98]',
                   type === t.id
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-background text-muted-foreground hover:bg-accent'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                    : 'bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                 )}
               >
                 <t.icon className="h-3.5 w-3.5" />
@@ -189,11 +189,11 @@ export function QuickCapture() {
             onChange={(e) => setBody(e.target.value)}
             rows={3}
           />
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Capture</Button>
+            <Button type="submit" className="shadow-sm">Capture</Button>
           </div>
         </form>
       </DialogContent>

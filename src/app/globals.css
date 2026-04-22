@@ -21,6 +21,8 @@
   --color-border: #e5e5e5;
   --color-ring: #0f0f0f;
   --color-input: #e5e5e5;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f0f0f;
 
   /* Sidebar */
   --color-sidebar-background: #fafafa;
@@ -52,6 +54,13 @@
 }
 
 @layer base {
+  :root[data-sidebar-collapsed="true"] {
+    --spacing-sidebar-current: var(--spacing-sidebar-collapsed);
+  }
+  :root {
+    --spacing-sidebar-current: var(--spacing-sidebar);
+  }
+
   html {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -94,6 +103,8 @@
     --color-border: #262626;
     --color-ring: #fafafa;
     --color-input: #262626;
+    --color-popover: #0a0a0a;
+    --color-popover-foreground: #fafafa;
     --color-sidebar-background: #09090b;
     --color-sidebar-foreground: #fafafa;
     --color-sidebar-border: #262626;

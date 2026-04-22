@@ -209,7 +209,7 @@ export default function NoteDetailClientPage() {
           setTitle(e.target.value);
           setHasChanges(true);
         }}
-        className="border-0 bg-transparent text-2xl font-bold shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0"
+        className="h-auto border-0 bg-transparent px-0 text-3xl font-semibold tracking-tight shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0"
       />
 
       {/* Meta */}

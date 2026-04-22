@@ -123,14 +123,17 @@ export default function TodayPage() {
           </Link>
         </div>
         {tasks.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-8 text-center">
-            <CheckSquare className="mx-auto h-8 w-8 text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">No tasks due today</p>
-            <Link href="/tasks/new">
-              <Button variant="link" size="sm" className="mt-1">
+          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-12 transition-colors">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted/50">
+              <CheckSquare className="h-5 w-5 text-muted-foreground" aria-hidden />
+            </div>
+            <p className="mt-3 text-sm font-medium">No tasks due today</p>
+            <Button variant="outline" size="sm" className="mt-4" asChild>
+              <Link href="/tasks/new">
+                <Plus className="mr-2 h-4 w-4" />
                 Create a task
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         ) : (
           <div className="space-y-2">
@@ -153,9 +156,11 @@ export default function TodayPage() {
           </Link>
         </div>
         {notes.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-8 text-center">
-            <FileText className="mx-auto h-8 w-8 text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">No recent notes</p>
+          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-12 transition-colors">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted/50">
+              <FileText className="h-5 w-5 text-muted-foreground" aria-hidden />
+            </div>
+            <p className="mt-3 text-sm font-medium">No recent notes</p>
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
@@ -163,7 +168,7 @@ export default function TodayPage() {
               <Link
                 key={note.id}
                 href={`/notes/${note.id}`}
-                className="group rounded-lg border p-4 transition-colors hover:bg-accent"
+                className="group flex flex-col rounded-lg border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]"
               >
                 <h3 className="font-medium group-hover:underline">{note.title}</h3>
                 {note.plainTextExtract && (
@@ -171,7 +176,7 @@ export default function TodayPage() {
                     {note.plainTextExtract}
                   </p>
                 )}
-                <p className="mt-2 text-xs text-muted-foreground">
+                <p className="mt-auto pt-3 text-xs text-muted-foreground">
                   {formatRelative(note.updatedAt)}
                 </p>
               </Link>
@@ -194,8 +199,8 @@ function TaskRow({ task, onToggle }: { task: Task; onToggle: () => void }) {
   return (
     <div
       className={cn(
-        'flex items-center gap-3 rounded-lg border p-3 transition-colors',
-        task.status === 'done' && 'opacity-60'
+        'group flex items-center gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]',
+        task.status === 'done' && 'opacity-60 bg-muted/50 hover:bg-muted'
       )}
     >
       <button
