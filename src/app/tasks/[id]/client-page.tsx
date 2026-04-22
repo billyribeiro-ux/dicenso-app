@@ -14,9 +14,9 @@ import { cn } from '@/lib/utils';
 import type { Task } from '@/types';
 
 export default function TaskDetailClientPage() {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = params.id as string;
+  const id = params?.id;
 
   const [task, setTask] = React.useState<Task | null>(null);
   const [title, setTitle] = React.useState('');
@@ -25,12 +25,8 @@ export default function TaskDetailClientPage() {
   const [dueAt, setDueAt] = React.useState('');
   const [saving, setSaving] = React.useState(false);
 
-  React.useEffect(() => {
+  const loadTask = React.useCallback(async () => {
     if (!id) return;
-    loadTask();
-  }, [id]);
-
-  const loadTask = async () => {
     const t = await tasksRepo.getById(id);
     if (!t) {
       router.push('/tasks');
@@ -41,7 +37,11 @@ export default function TaskDetailClientPage() {
     setDescription(t.description ?? '');
     setPriority(t.priority);
     setDueAt(t.dueAt ? new Date(t.dueAt).toISOString().slice(0, 16) : '');
-  };
+  }, [id, router]);
+
+  React.useEffect(() => {
+    void loadTask();
+  }, [loadTask]);
 
   const handleSave = React.useCallback(async () => {
     if (!task) return;
@@ -58,13 +58,13 @@ export default function TaskDetailClientPage() {
         dueAt: dueAt ? new Date(dueAt) : undefined,
       });
       toast.success('Task updated');
-      loadTask();
+      void loadTask();
     } catch {
       toast.error('Failed to update task');
     } finally {
       setSaving(false);
     }
-  }, [task, title, description, priority, dueAt]);
+  }, [task, title, description, priority, dueAt, loadTask]);
 
   const handleDelete = async () => {
     if (!task) return;

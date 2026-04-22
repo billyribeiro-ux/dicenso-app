@@ -1,10 +1,15 @@
 import PromptDetailClientPage from './client-page';
 
-// Required for static export — client-side routing handles all IDs
+/**
+ * Local-first IDs live in IndexedDB — they aren't known at build time.
+ * We emit a single shell (`/prompts/_`) that client-side routing reuses for
+ * every real id at runtime. In dev mode, Next.js routes any id here directly
+ * (no static pre-render needed).
+ */
 export function generateStaticParams() {
-  return [{ id: 'placeholder' }];
+  return [{ id: '_' }];
 }
 
-export default function PromptDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function PromptDetailPage() {
   return <PromptDetailClientPage />;
 }

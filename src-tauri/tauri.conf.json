@@ -2,12 +2,12 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "DiCenso",
   "version": "0.1.0",
-  "identifier": "com.dicenso.app",
+  "identifier": "com.dicenso.desktop",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",
     "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm build"
+    "beforeBuildCommand": "NEXT_EXPORT=1 pnpm build"
   },
   "app": {
     "windows": [

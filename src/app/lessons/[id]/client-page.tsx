@@ -15,9 +15,9 @@ import { cn } from '@/lib/utils';
 import type { Lesson } from '@/types';
 
 export default function LessonDetailClientPage() {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = params.id as string;
+  const id = params?.id;
 
   const [lesson, setLesson] = React.useState<Lesson | null>(null);
   const [title, setTitle] = React.useState('');
@@ -26,12 +26,8 @@ export default function LessonDetailClientPage() {
   const [status, setStatus] = React.useState<Lesson['status']>('not_started');
   const [saving, setSaving] = React.useState(false);
 
-  React.useEffect(() => {
+  const loadLesson = React.useCallback(async () => {
     if (!id) return;
-    loadLesson();
-  }, [id]);
-
-  const loadLesson = async () => {
     const l = await lessonsRepo.getById(id);
     if (!l) {
       router.push('/lessons');
@@ -42,7 +38,11 @@ export default function LessonDetailClientPage() {
     setSummary(l.summary ?? '');
     setBody(l.body ?? '');
     setStatus(l.status);
-  };
+  }, [id, router]);
+
+  React.useEffect(() => {
+    void loadLesson();
+  }, [loadLesson]);
 
   const handleSave = React.useCallback(async () => {
     if (!lesson) return;
@@ -59,13 +59,13 @@ export default function LessonDetailClientPage() {
         status,
       });
       toast.success('Lesson updated');
-      loadLesson();
+      void loadLesson();
     } catch {
       toast.error('Failed to update lesson');
     } finally {
       setSaving(false);
     }
-  }, [lesson, title, summary, body, status]);
+  }, [lesson, title, summary, body, status, loadLesson]);
 
   const handleDelete = async () => {
     if (!lesson) return;

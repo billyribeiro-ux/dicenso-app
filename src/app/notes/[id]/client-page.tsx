@@ -24,9 +24,9 @@ import type { Note, NoteVersion } from '@/types';
 import { cn } from '@/lib/utils';
 
 export default function NoteDetailClientPage() {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = params.id as string;
+  const id = params?.id;
 
   const [note, setNote] = React.useState<Note | null>(null);
   const [title, setTitle] = React.useState('');
@@ -38,12 +38,8 @@ export default function NoteDetailClientPage() {
   const [hasChanges, setHasChanges] = React.useState(false);
   const lastVersionAtRef = React.useRef<number>(0);
 
-  React.useEffect(() => {
+  const loadNote = React.useCallback(async () => {
     if (!id) return;
-    loadNote();
-  }, [id]);
-
-  const loadNote = async () => {
     const n = await notesRepo.getById(id);
     if (!n) {
       router.push('/notes');
@@ -53,7 +49,11 @@ export default function NoteDetailClientPage() {
     setTitle(n.title);
     setEditorJson(n.editorJson);
     setPlainText(n.plainTextExtract ?? '');
-  };
+  }, [id, router]);
+
+  React.useEffect(() => {
+    void loadNote();
+  }, [loadNote]);
 
   const handleSave = React.useCallback(async () => {
     if (!note) return;
@@ -74,13 +74,13 @@ export default function NoteDetailClientPage() {
       });
       setHasChanges(false);
       toast.success('Note saved');
-      loadNote();
+      void loadNote();
     } catch {
       toast.error('Failed to save');
     } finally {
       setSaving(false);
     }
-  }, [note, title, editorJson, plainText]);
+  }, [note, title, editorJson, plainText, loadNote]);
 
   // Autosave (no version snapshot — just update content)
   React.useEffect(() => {
@@ -103,13 +103,13 @@ export default function NoteDetailClientPage() {
   const togglePin = async () => {
     if (!note) return;
     await notesRepo.pin(note.id, !note.isPinned);
-    loadNote();
+    void loadNote();
   };
 
   const toggleFavorite = async () => {
     if (!note) return;
     await notesRepo.favorite(note.id, !note.isFavorite);
-    loadNote();
+    void loadNote();
   };
 
   const archiveNote = async () => {
@@ -127,6 +127,7 @@ export default function NoteDetailClientPage() {
   };
 
   const loadVersions = async () => {
+    if (!id) return;
     const v = await noteVersionsRepo.getByNote(id);
     setVersions(v);
     setShowVersions(true);
@@ -140,7 +141,7 @@ export default function NoteDetailClientPage() {
     });
     toast.success('Version restored');
     setShowVersions(false);
-    loadNote();
+    void loadNote();
   };
 
   useKeyboardShortcut(

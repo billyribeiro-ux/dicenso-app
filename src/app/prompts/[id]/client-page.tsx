@@ -13,9 +13,9 @@ import { ArrowLeft, Save, Trash2, Copy } from 'lucide-react';
 import type { Prompt } from '@/types';
 
 export default function PromptDetailClientPage() {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
-  const id = params.id as string;
+  const id = params?.id;
 
   const [prompt, setPrompt] = React.useState<Prompt | null>(null);
   const [title, setTitle] = React.useState('');
@@ -23,12 +23,8 @@ export default function PromptDetailClientPage() {
   const [category, setCategory] = React.useState('general');
   const [saving, setSaving] = React.useState(false);
 
-  React.useEffect(() => {
+  const loadPrompt = React.useCallback(async () => {
     if (!id) return;
-    loadPrompt();
-  }, [id]);
-
-  const loadPrompt = async () => {
     const p = await promptsRepo.getById(id);
     if (!p) {
       router.push('/prompts');
@@ -38,7 +34,11 @@ export default function PromptDetailClientPage() {
     setTitle(p.title);
     setBody(p.body);
     setCategory(p.category);
-  };
+  }, [id, router]);
+
+  React.useEffect(() => {
+    void loadPrompt();
+  }, [loadPrompt]);
 
   const handleSave = React.useCallback(async () => {
     if (!prompt) return;
@@ -54,13 +54,13 @@ export default function PromptDetailClientPage() {
         category,
       });
       toast.success('Prompt updated');
-      loadPrompt();
+      void loadPrompt();
     } catch {
       toast.error('Failed to update prompt');
     } finally {
       setSaving(false);
     }
-  }, [prompt, title, body, category]);
+  }, [prompt, title, body, category, loadPrompt]);
 
   const handleDelete = async () => {
     if (!prompt) return;
