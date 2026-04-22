@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "concurrently -k -n SYNC,NEXT \"pnpm sync:prompts\" \"next dev --turbopack\"",
+    "dev:web": "next dev --turbopack",
+    "sync:prompts": "node scripts/prompt-sync-server.mjs",
     "build": "next build",
     "build:static": "NEXT_EXPORT=1 next build",
     "start": "next start",
@@ -25,6 +27,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@tauri-apps/api": "^2.10.1",
     "@tiptap/extension-code-block-lowlight": "^2.27.2",
     "@tiptap/extension-highlight": "^2.27.2",
     "@tiptap/extension-image": "^2.27.2",
@@ -60,6 +63,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4.2.4",
     "@tauri-apps/cli": "^2.10.1",
