@@ -2,51 +2,23 @@ import { getDb } from '@/lib/db';
 import { BaseRepository } from './base';
 import type { Prompt, PromptTemplate } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-import type { SharedPromptRecord } from '@/lib/shared-prompts';
-import { toPrompt, toSharedPrompt } from '@/lib/shared-prompts';
-
-type PromptPatch = Partial<Omit<Prompt, 'id' | 'createdAt'>>;
+import {
+  createShared,
+  deleteShared,
+  getSharedById,
+  listShared,
+  updateShared,
+  upsertManyShared,
+} from '@/lib/shared-entity-client';
 
 const LEGACY_PROMPTS_MIGRATION_KEY = 'dicenso:prompts-migrated:v1';
-const PROMPTS_SYNC_SERVER = 'http://127.0.0.1:4546';
-
-function isTauriRuntime(): boolean {
-  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
-}
-
-async function getTauriInvoke() {
-  const mod = await import('@tauri-apps/api/core');
-  return mod.invoke;
-}
-
-async function fetchJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
-  const res = await fetch(input, init);
-  if (!res.ok) {
-    throw new Error(`Prompt sync API failed: ${res.status}`);
-  }
-  return (await res.json()) as T;
-}
+const PROMPT_DATE_FIELDS = ['createdAt', 'updatedAt'] as const;
 
 class PromptsRepository {
   private migrationPromise: Promise<void> | null = null;
 
   private async legacyTable() {
     return (await getDb()).prompts;
-  }
-
-  private async upsertManyShared(items: Prompt[]): Promise<void> {
-    const payload = items.map(toSharedPrompt);
-    if (isTauriRuntime()) {
-      const invoke = await getTauriInvoke();
-      await invoke<number>('shared_prompts_upsert_many', { items: payload });
-      return;
-    }
-
-    await fetchJson<{ ok: true }>(`${PROMPTS_SYNC_SERVER}/prompts/upsert-many`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: payload }),
-    });
   }
 
   private async ensureLegacyMigration(userId: string): Promise<void> {
@@ -59,7 +31,7 @@ class PromptsRepository {
         const table = (await getDb()).prompts;
         const legacy = await table.where({ userId }).toArray();
         if (legacy.length > 0) {
-          await this.upsertManyShared(legacy);
+          await upsertManyShared('prompts', legacy, PROMPT_DATE_FIELDS);
         }
         localStorage.setItem(LEGACY_PROMPTS_MIGRATION_KEY, '1');
       } finally {
@@ -72,17 +44,8 @@ class PromptsRepository {
 
   async getByUser(userId: string): Promise<Prompt[]> {
     await this.ensureLegacyMigration(userId);
-    if (isTauriRuntime()) {
-      const invoke = await getTauriInvoke();
-      const rows = await invoke<SharedPromptRecord[]>('shared_prompts_list', { userId });
-      return rows.map(toPrompt);
-    }
-
     try {
-      const { prompts } = await fetchJson<{ prompts: SharedPromptRecord[] }>(
-        `${PROMPTS_SYNC_SERVER}/prompts?userId=${encodeURIComponent(userId)}`,
-      );
-      return prompts.map(toPrompt);
+      return await listShared<Prompt>('prompts', userId, PROMPT_DATE_FIELDS);
     } catch {
       // Fallback for environments without the local sync daemon.
       return (await this.legacyTable()).where({ userId }).reverse().sortBy('updatedAt');
@@ -90,20 +53,8 @@ class PromptsRepository {
   }
 
   async getById(id: string): Promise<Prompt | undefined> {
-    if (isTauriRuntime()) {
-      const invoke = await getTauriInvoke();
-      const row = await invoke<SharedPromptRecord | null>('shared_prompts_get', { id });
-      return row ? toPrompt(row) : undefined;
-    }
-
     try {
-      const res = await fetch(`${PROMPTS_SYNC_SERVER}/prompts/${encodeURIComponent(id)}`);
-      if (res.status === 404) return undefined;
-      if (!res.ok) {
-        throw new Error(`Prompt fetch failed: ${res.status}`);
-      }
-      const { prompt } = (await res.json()) as { prompt: SharedPromptRecord };
-      return toPrompt(prompt);
+      return await getSharedById<Prompt>('prompts', id, PROMPT_DATE_FIELDS);
     } catch {
       return (await this.legacyTable()).get(id);
     }
@@ -117,57 +68,23 @@ class PromptsRepository {
       createdAt: now,
       updatedAt: now,
     };
-    const payload = toSharedPrompt(prompt);
-
-    if (isTauriRuntime()) {
-      const invoke = await getTauriInvoke();
-      const created = await invoke<SharedPromptRecord>('shared_prompts_create', { item: payload });
-      return toPrompt(created);
-    }
 
     try {
-      const { prompt: created } = await fetchJson<{ prompt: SharedPromptRecord }>(
-        `${PROMPTS_SYNC_SERVER}/prompts`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        },
-      );
-      return toPrompt(created);
+      return await createShared<Prompt>('prompts', prompt, PROMPT_DATE_FIELDS);
     } catch {
       await (await this.legacyTable()).add(prompt);
       return prompt;
     }
   }
 
-  async update(id: string, changes: PromptPatch): Promise<Prompt | undefined> {
+  async update(id: string, changes: Partial<Omit<Prompt, 'id' | 'createdAt'>>): Promise<Prompt | undefined> {
     const payload: Record<string, unknown> = { ...changes, updatedAt: new Date().toISOString() };
     if (changes.updatedAt instanceof Date) {
       payload.updatedAt = changes.updatedAt.toISOString();
     }
 
-    if (isTauriRuntime()) {
-      const invoke = await getTauriInvoke();
-      const updated = await invoke<SharedPromptRecord | null>('shared_prompts_update', {
-        id,
-        changes: payload,
-      });
-      return updated ? toPrompt(updated) : undefined;
-    }
-
     try {
-      const res = await fetch(`${PROMPTS_SYNC_SERVER}/prompts/${encodeURIComponent(id)}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (res.status === 404) return undefined;
-      if (!res.ok) {
-        throw new Error(`Prompt update failed: ${res.status}`);
-      }
-      const { prompt } = (await res.json()) as { prompt: SharedPromptRecord };
-      return toPrompt(prompt);
+      return await updateShared<Prompt>('prompts', id, payload, PROMPT_DATE_FIELDS);
     } catch {
       const t = await this.legacyTable();
       await t.update(id, {
@@ -179,15 +96,8 @@ class PromptsRepository {
   }
 
   async delete(id: string): Promise<void> {
-    if (isTauriRuntime()) {
-      const invoke = await getTauriInvoke();
-      await invoke('shared_prompts_delete', { id });
-      return;
-    }
     try {
-      await fetchJson<{ ok: true }>(`${PROMPTS_SYNC_SERVER}/prompts/${encodeURIComponent(id)}`, {
-        method: 'DELETE',
-      });
+      await deleteShared('prompts', id);
     } catch {
       await (await this.legacyTable()).delete(id);
     }

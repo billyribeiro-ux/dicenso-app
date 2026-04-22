@@ -7,24 +7,53 @@ const HOST = '127.0.0.1';
 const PORT = Number(process.env.DICENSO_PROMPTS_SYNC_PORT || 4546);
 
 const STORE_DIR = join(homedir(), '.dicenso');
-const STORE_FILE = join(STORE_DIR, 'shared-prompts.json');
-const STORE_TMP_FILE = join(STORE_DIR, 'shared-prompts.tmp.json');
+const STORE_FILE = join(STORE_DIR, 'shared-entities.json');
+const STORE_TMP_FILE = join(STORE_DIR, 'shared-entities.tmp.json');
+const LEGACY_PROMPTS_FILE = join(STORE_DIR, 'shared-prompts.json');
+
+const ALLOWED_COLLECTIONS = new Set(['prompts', 'notes', 'tasks', 'lessons']);
 
 async function ensureStoreDir() {
   await mkdir(STORE_DIR, { recursive: true });
+}
+
+function emptyStore() {
+  return {
+    version: 1,
+    collections: { prompts: [], notes: [], tasks: [], lessons: [] },
+  };
+}
+
+function normalizeStore(parsed) {
+  const store = emptyStore();
+  if (parsed && typeof parsed === 'object' && parsed.collections && typeof parsed.collections === 'object') {
+    for (const collection of ALLOWED_COLLECTIONS) {
+      if (Array.isArray(parsed.collections[collection])) {
+        store.collections[collection] = parsed.collections[collection];
+      }
+    }
+  }
+  return store;
 }
 
 async function readStore() {
   await ensureStoreDir();
   try {
     const raw = await readFile(STORE_FILE, 'utf8');
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed.prompts)) {
-      return { version: 1, prompts: [] };
-    }
-    return parsed;
+    return normalizeStore(JSON.parse(raw));
   } catch {
-    return { version: 1, prompts: [] };
+    try {
+      const rawLegacy = await readFile(LEGACY_PROMPTS_FILE, 'utf8');
+      const legacy = JSON.parse(rawLegacy);
+      const migrated = emptyStore();
+      if (Array.isArray(legacy.prompts)) {
+        migrated.collections.prompts = legacy.prompts;
+      }
+      await writeStore(migrated);
+      return migrated;
+    } catch {
+      return emptyStore();
+    }
   }
 }
 
@@ -62,14 +91,17 @@ function readBody(req) {
   });
 }
 
-const server = createServer(async (req, res) => {
-  if (!req.url || !req.method) {
-    return sendJson(res, 400, { error: 'Bad request' });
-  }
+function getCollectionName(segments) {
+  if (segments[0] !== 'entities') return null;
+  const collection = segments[1];
+  if (!collection || !ALLOWED_COLLECTIONS.has(collection)) return null;
+  return collection;
+}
 
-  if (req.method === 'OPTIONS') {
-    return sendJson(res, 204, {});
-  }
+const server = createServer(async (req, res) => {
+  if (!req.url || !req.method) return sendJson(res, 400, { error: 'Bad request' });
+
+  if (req.method === 'OPTIONS') return sendJson(res, 204, {});
 
   const url = new URL(req.url, `http://${HOST}:${PORT}`);
   const segments = url.pathname.split('/').filter(Boolean);
@@ -79,52 +111,56 @@ const server = createServer(async (req, res) => {
       return sendJson(res, 200, { ok: true });
     }
 
-    if (req.method === 'GET' && url.pathname === '/prompts') {
+    const collection = getCollectionName(segments);
+
+    if (req.method === 'GET' && collection && segments.length === 2) {
       const userId = url.searchParams.get('userId');
       if (!userId) return sendJson(res, 400, { error: 'userId is required' });
       const store = await readStore();
-      const prompts = store.prompts
-        .filter((p) => p.userId === userId)
-        .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-      return sendJson(res, 200, { prompts });
+      const items = store.collections[collection]
+        .filter((item) => item.userId === userId)
+        .sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+      return sendJson(res, 200, { items });
     }
 
-    if (req.method === 'GET' && segments[0] === 'prompts' && segments[1]) {
-      const id = decodeURIComponent(segments[1]);
+    if (req.method === 'GET' && collection && segments.length === 3) {
+      const id = decodeURIComponent(segments[2]);
       const store = await readStore();
-      const prompt = store.prompts.find((p) => p.id === id);
-      if (!prompt) return sendJson(res, 404, { error: 'Not found' });
-      return sendJson(res, 200, { prompt });
+      const item = store.collections[collection].find((value) => value.id === id);
+      if (!item) return sendJson(res, 404, { error: 'Not found' });
+      return sendJson(res, 200, { item });
     }
 
-    if (req.method === 'POST' && url.pathname === '/prompts') {
-      const prompt = await readBody(req);
+    if (req.method === 'POST' && collection && segments.length === 2) {
+      const body = await readBody(req);
+      const item = body.item ?? body;
       const store = await readStore();
-      store.prompts = store.prompts.filter((p) => p.id !== prompt.id);
-      store.prompts.push(prompt);
+      store.collections[collection] = store.collections[collection].filter((value) => value.id !== item.id);
+      store.collections[collection].push(item);
       await writeStore(store);
-      return sendJson(res, 201, { prompt });
+      return sendJson(res, 201, { item });
     }
 
-    if (req.method === 'POST' && url.pathname === '/prompts/upsert-many') {
+    if (req.method === 'POST' && collection && segments.length === 3 && segments[2] === 'upsert-many') {
       const body = await readBody(req);
       const items = Array.isArray(body.items) ? body.items : [];
       const store = await readStore();
       for (const item of items) {
-        store.prompts = store.prompts.filter((p) => p.id !== item.id);
-        store.prompts.push(item);
+        store.collections[collection] = store.collections[collection].filter((value) => value.id !== item.id);
+        store.collections[collection].push(item);
       }
       await writeStore(store);
       return sendJson(res, 200, { ok: true, count: items.length });
     }
 
-    if (req.method === 'PATCH' && segments[0] === 'prompts' && segments[1]) {
-      const id = decodeURIComponent(segments[1]);
-      const changes = await readBody(req);
+    if (req.method === 'PATCH' && collection && segments.length === 3) {
+      const id = decodeURIComponent(segments[2]);
+      const body = await readBody(req);
+      const changes = body.changes ?? body;
       const store = await readStore();
-      const idx = store.prompts.findIndex((p) => p.id === id);
+      const idx = store.collections[collection].findIndex((value) => value.id === id);
       if (idx < 0) return sendJson(res, 404, { error: 'Not found' });
-      const existing = store.prompts[idx];
+      const existing = store.collections[collection][idx];
       const updated = {
         ...existing,
         ...changes,
@@ -132,15 +168,15 @@ const server = createServer(async (req, res) => {
         createdAt: existing.createdAt,
         updatedAt: changes.updatedAt || new Date().toISOString(),
       };
-      store.prompts[idx] = updated;
+      store.collections[collection][idx] = updated;
       await writeStore(store);
-      return sendJson(res, 200, { prompt: updated });
+      return sendJson(res, 200, { item: updated });
     }
 
-    if (req.method === 'DELETE' && segments[0] === 'prompts' && segments[1]) {
-      const id = decodeURIComponent(segments[1]);
+    if (req.method === 'DELETE' && collection && segments.length === 3) {
+      const id = decodeURIComponent(segments[2]);
       const store = await readStore();
-      store.prompts = store.prompts.filter((p) => p.id !== id);
+      store.collections[collection] = store.collections[collection].filter((value) => value.id !== id);
       await writeStore(store);
       return sendJson(res, 200, { ok: true });
     }
