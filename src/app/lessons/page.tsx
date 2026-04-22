@@ -6,7 +6,8 @@ import { lessonsRepo } from '@/lib/repositories';
 import { EntityHubHeader } from '@/components/layout/entity-hub-header';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Clock, CheckCircle2, Circle, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { BookOpen, Clock, CheckCircle2, Circle, ArrowRight, Plus } from 'lucide-react';
 import type { Lesson } from '@/types';
 import { cn } from '@/lib/utils';
 
