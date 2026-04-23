@@ -43,6 +43,7 @@ export default function FavoritesPage() {
               <Link
                 key={note.id}
                 href={`/notes/${note.id}`}
+                prefetch={false}
                 className="rounded-lg border p-4 transition-colors hover:bg-accent"
               >
                 <div className="flex items-center gap-2">
@@ -73,6 +74,7 @@ export default function FavoritesPage() {
               <Link
                 key={prompt.id}
                 href={`/prompts/${prompt.id}`}
+                prefetch={false}
                 className="block rounded-lg border p-4 transition-colors hover:bg-accent/60"
               >
                 <div className="flex items-center gap-2">

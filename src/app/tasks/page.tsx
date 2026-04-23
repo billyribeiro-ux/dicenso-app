@@ -144,6 +144,7 @@ export default function TasksPage() {
             >
               <Link
                 href={`/tasks/${task.id}`}
+                prefetch={false}
                 className="absolute inset-0 z-0 rounded-lg"
                 aria-label={`Open task: ${task.title}`}
               />

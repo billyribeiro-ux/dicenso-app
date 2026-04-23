@@ -143,6 +143,7 @@ export default function LessonsPage() {
               <Link
                 key={lesson.id}
                 href={`/lessons/${lesson.id}`}
+                prefetch={false}
                 role="listitem"
                 className="group flex flex-col rounded-lg border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]"
               >

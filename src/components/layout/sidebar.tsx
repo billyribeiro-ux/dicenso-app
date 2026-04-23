@@ -219,10 +219,22 @@ export function Sidebar() {
         )}
         aria-label="Main navigation"
       >
-        {/* Header */}
-        <div className="flex h-14 items-center border-b px-3">
+        {/*
+         * Header doubles as the macOS drag region. With `titleBarStyle: Overlay`
+         * + `hiddenTitle: true` in tauri.conf.json, there is no native chrome
+         * to grab — so we mark the header surface as a drag region and reserve
+         * left padding for the traffic-light buttons.
+         */}
+        <div
+          data-tauri-drag-region
+          className="flex h-14 items-center border-b pr-3 pl-[var(--traffic-light-inset,12px)]"
+        >
           {!collapsed && (
-            <Link href="/today" className="flex items-center gap-2 font-semibold text-sidebar-foreground">
+            <Link
+              href="/today"
+              className="flex items-center gap-2 font-semibold text-sidebar-foreground"
+              style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+            >
               <div className="flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-background">
                 <Command className="h-4 w-4" />
               </div>
@@ -230,7 +242,10 @@ export function Sidebar() {
             </Link>
           )}
           {collapsed && (
-            <div className="mx-auto flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-background">
+            <div
+              className="mx-auto flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-background"
+              style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+            >
               <Command className="h-4 w-4" />
             </div>
           )}

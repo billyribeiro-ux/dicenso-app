@@ -167,6 +167,7 @@ export default function NotesPage() {
             >
               <Link
                 href={`/notes/${note.id}`}
+                prefetch={false}
                 className="absolute inset-0 z-0 rounded-lg"
                 aria-label={`Open note: ${note.title}`}
               />

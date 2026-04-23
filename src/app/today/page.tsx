@@ -168,6 +168,7 @@ export default function TodayPage() {
               <Link
                 key={note.id}
                 href={`/notes/${note.id}`}
+                prefetch={false}
                 className="group flex flex-col rounded-lg border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]"
               >
                 <h3 className="font-medium group-hover:underline">{note.title}</h3>

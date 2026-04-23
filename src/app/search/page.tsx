@@ -75,6 +75,7 @@ export default function SearchPage() {
             <Link
               key={note.id}
               href={`/notes/${note.id}`}
+              prefetch={false}
               className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent"
             >
               <FileText className="h-4 w-4 text-muted-foreground" />
@@ -100,6 +101,7 @@ export default function SearchPage() {
             <Link
               key={task.id}
               href={`/tasks/${task.id}`}
+              prefetch={false}
               className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
             >
               <CheckSquare className="h-4 w-4 text-muted-foreground" />
@@ -123,6 +125,7 @@ export default function SearchPage() {
             <Link
               key={prompt.id}
               href={`/prompts/${prompt.id}`}
+              prefetch={false}
               className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
             >
               <Terminal className="h-4 w-4 text-muted-foreground" />
@@ -144,6 +147,7 @@ export default function SearchPage() {
             <Link
               key={lesson.id}
               href={`/lessons/${lesson.id}`}
+              prefetch={false}
               className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
             >
               <BookOpen className="h-4 w-4 text-muted-foreground" />

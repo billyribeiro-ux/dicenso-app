@@ -42,10 +42,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Skip to main content
           </a>
+          {/*
+           * Top drag strip for Tauri (macOS `titleBarStyle: Overlay`).
+           * Covers only the main-content band (to the right of the sidebar),
+           * at a z-index BELOW the sidebar so sidebar interactions win, and
+           * above normal content. 28px ≈ macOS traffic-light height.
+           */}
+          <div
+            data-tauri-drag-region
+            aria-hidden
+            className="fixed right-0 top-0 z-30 h-7 lg:left-[var(--spacing-sidebar-current)]"
+            style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+          />
           <Sidebar />
           <main
             id="main-content"
-            className="min-h-screen transition-all duration-200 lg:pl-[var(--spacing-sidebar-current)]"
+            className="min-h-screen pt-7 transition-all duration-200 lg:pl-[var(--spacing-sidebar-current)]"
           >
             <ErrorBoundary>
               <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

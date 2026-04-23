@@ -122,6 +122,7 @@ export default function PromptsPage() {
                */}
               <Link
                 href={`/prompts/${prompt.id}`}
+                prefetch={false}
                 className="absolute inset-0 z-0 rounded-lg"
                 aria-label={`Open prompt: ${prompt.title}`}
               />

@@ -118,7 +118,7 @@ export default function BrainstormPage() {
               </p>
             )}
             <div className="mt-auto flex gap-2 pt-3">
-              <Link href={`/notes/${item.id}`}>
+              <Link href={`/notes/${item.id}`} prefetch={false}>
                 <Button variant="ghost" size="sm" className="gap-1 h-7 px-2 text-xs">
                   <FileText className="h-3 w-3" />
                   Open
