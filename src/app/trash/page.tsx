@@ -83,13 +83,13 @@ export default function TrashPage() {
 
   return (
     <div className="space-y-6">
-      <div className="premium-panel rounded-3xl p-6">
+      <div className="premium-panel rounded-xl p-6">
         <h1 className="text-3xl font-extrabold tracking-[-0.05em]">Trash</h1>
         <p className="text-sm font-medium text-muted-foreground">{items.length} deleted items</p>
       </div>
 
       {items.length === 0 ? (
-        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-20">
+        <div className="empty-state flex flex-col items-center justify-center rounded-xl py-20">
           <Trash2 className="h-10 w-10 text-muted-foreground" />
           <p className="mt-4 text-muted-foreground">Trash is empty</p>
         </div>
@@ -100,7 +100,7 @@ export default function TrashPage() {
             return (
               <div
                 key={`${item.type}-${item.data.id}`}
-                className="entity-card flex items-center gap-3 rounded-2xl p-3.5"
+                className="entity-card flex items-center gap-3 rounded-xl p-3.5"
               >
                 <Icon className="h-4 w-4 text-muted-foreground" />
                 <div className="min-w-0 flex-1">

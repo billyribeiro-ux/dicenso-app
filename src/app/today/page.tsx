@@ -76,17 +76,17 @@ export default function TodayPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="premium-panel relative overflow-hidden rounded-3xl p-6">
+      <div className="premium-panel relative overflow-hidden rounded-xl p-6">
         <div className="pointer-events-none absolute -right-10 -top-16 h-44 w-44 rounded-full bg-primary/10 blur-3xl" />
-        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground">{dateString}</p>
-        <h1 className="mt-1 text-4xl font-extrabold tracking-[-0.055em] sm:text-5xl">{dayName}</h1>
-        <p className="mt-2 max-w-2xl text-sm font-medium text-muted-foreground">
+        <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">{dateString}</p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{dayName}</h1>
+        <p className="mt-2 max-w-2xl text-base text-muted-foreground">
           Turn the day into a clean sequence of decisions, focus, and follow-through.
         </p>
       </div>
 
       {/* Daily Plan */}
-      <section className="premium-panel rounded-3xl p-5 space-y-3">
+      <section className="premium-panel rounded-xl p-6 space-y-3">
         <h2 className="text-lg font-semibold">Plan for Today</h2>
         <Textarea
           placeholder="What do you want to accomplish today?"
@@ -100,7 +100,7 @@ export default function TodayPage() {
       </section>
 
       {/* Focus Timer */}
-      <section className="premium-panel rounded-3xl p-5 space-y-3">
+      <section className="premium-panel rounded-xl p-6 space-y-3">
         <FocusTimer />
       </section>
 
@@ -128,8 +128,8 @@ export default function TodayPage() {
           </Link>
         </div>
         {tasks.length === 0 ? (
-          <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-12 transition-colors">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/70 shadow-sm">
+          <div className="empty-state flex flex-col items-center justify-center rounded-xl py-12 transition-colors">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted shadow-sm">
               <CheckSquare className="h-5 w-5 text-muted-foreground" aria-hidden />
             </div>
             <p className="mt-3 text-sm font-medium">No tasks due today</p>
@@ -161,8 +161,8 @@ export default function TodayPage() {
           </Link>
         </div>
         {notes.length === 0 ? (
-          <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-12 transition-colors">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/70 shadow-sm">
+          <div className="empty-state flex flex-col items-center justify-center rounded-xl py-12 transition-colors">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted shadow-sm">
               <FileText className="h-5 w-5 text-muted-foreground" aria-hidden />
             </div>
             <p className="mt-3 text-sm font-medium">No recent notes</p>
@@ -174,7 +174,7 @@ export default function TodayPage() {
                 key={note.id}
                 href={entityDetailHref('notes', note.id)}
                 prefetch={false}
-                className="entity-card group flex flex-col rounded-2xl p-4 transition-all active:scale-[0.99]"
+                className="entity-card group flex flex-col rounded-xl p-4 transition-all"
               >
                 <h3 className="font-medium group-hover:underline">{note.title}</h3>
                 {note.plainTextExtract && (
@@ -205,7 +205,7 @@ function TaskRow({ task, onToggle }: { task: Task; onToggle: () => void }) {
   return (
     <div
       className={cn(
-        'entity-card group flex items-center gap-3 rounded-2xl p-3.5 transition-all active:scale-[0.99]',
+        'entity-card group flex items-center gap-3 rounded-xl p-4 transition-all',
         task.status === 'done' && 'opacity-60'
       )}
     >

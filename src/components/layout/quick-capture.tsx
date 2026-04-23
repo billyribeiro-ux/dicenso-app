@@ -166,7 +166,7 @@ export function QuickCapture() {
                 type="button"
                 onClick={() => setType(t.id)}
                 className={cn(
-                  'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all active:scale-[0.98]',
+                  'flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-medium transition-colors',
                   type === t.id
                     ? 'bg-primary text-primary-foreground border-primary shadow-sm'
                     : 'bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground'

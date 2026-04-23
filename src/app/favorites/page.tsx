@@ -29,7 +29,7 @@ export default function FavoritesPage() {
 
   return (
     <div className="space-y-8">
-      <div className="premium-panel rounded-3xl p-6">
+      <div className="premium-panel rounded-xl p-6">
         <h1 className="text-3xl font-extrabold tracking-[-0.05em]">Favorites</h1>
         <p className="text-sm font-medium text-muted-foreground">Your starred notes and prompts</p>
       </div>
@@ -45,7 +45,7 @@ export default function FavoritesPage() {
                 key={note.id}
                 href={entityDetailHref('notes', note.id)}
                 prefetch={false}
-                className="entity-card rounded-2xl p-4 transition-all active:scale-[0.99]"
+                className="entity-card rounded-xl p-4 transition-all"
               >
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
@@ -76,7 +76,7 @@ export default function FavoritesPage() {
                 key={prompt.id}
                 href={entityDetailHref('prompts', prompt.id)}
                 prefetch={false}
-                className="entity-card block rounded-2xl p-4 transition-all active:scale-[0.99]"
+                className="entity-card block rounded-xl p-4 transition-all"
               >
                 <div className="flex items-center gap-2">
                   <Terminal className="h-4 w-4 text-muted-foreground" />

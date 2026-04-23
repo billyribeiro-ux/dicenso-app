@@ -63,10 +63,10 @@ function NavLink({
       onClick={onClick}
       aria-current={isActive ? 'page' : undefined}
       className={cn(
-        'group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold tracking-[-0.01em] transition-all active:scale-[0.98]',
+        'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
         isActive
-          ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-md ring-1 ring-border/50'
-          : 'text-sidebar-foreground/78 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+          ? 'bg-primary text-primary-foreground shadow'
+          : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
         collapsed && 'justify-center px-2 ring-0'
       )}
     >
@@ -213,7 +213,7 @@ export function Sidebar() {
         ref={sidebarRef}
         id="main-sidebar"
         className={cn(
-          'fixed top-0 left-0 z-50 flex h-screen flex-col border-r border-sidebar-border/80 bg-sidebar-background/88 shadow-xl backdrop-blur-2xl transition-all duration-200 ease-in-out',
+          'fixed top-0 left-0 z-50 flex h-screen flex-col border-r bg-sidebar-background transition-all duration-200 ease-in-out',
           collapsed ? 'w-[var(--spacing-sidebar-collapsed)]' : 'w-[var(--spacing-sidebar)]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
@@ -238,7 +238,7 @@ export function Sidebar() {
             >
               <div
                 data-tauri-drag-region
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-foreground text-background shadow-sm"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-foreground text-background shadow-sm"
               >
                 <Command data-tauri-drag-region className="h-4 w-4" />
               </div>
@@ -250,7 +250,7 @@ export function Sidebar() {
           {collapsed && (
             <div
               data-tauri-drag-region
-              className="mx-auto flex h-7 w-7 items-center justify-center rounded-xl bg-foreground text-background shadow-sm"
+              className="mx-auto flex h-6 w-6 items-center justify-center rounded-md bg-foreground text-background shadow-sm"
               style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
               aria-label="DiCenso window drag region"
             >

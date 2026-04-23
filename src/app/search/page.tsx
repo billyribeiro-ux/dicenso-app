@@ -45,7 +45,7 @@ export default function SearchPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div className="premium-panel rounded-3xl p-6">
+      <div className="premium-panel rounded-xl p-6">
         <h1 className="text-3xl font-extrabold tracking-[-0.05em]">Search</h1>
         <p className="text-sm font-medium text-muted-foreground">
           {query.trim().length < 2 ? 'Type to search across your vault' : `${total} results`}
@@ -64,7 +64,7 @@ export default function SearchPage() {
       </div>
 
       {query.trim().length >= 2 && total === 0 && (
-        <div className="empty-state rounded-3xl py-12 text-center text-muted-foreground">No results found</div>
+        <div className="empty-state rounded-xl py-12 text-center text-muted-foreground">No results found</div>
       )}
 
       {results.notes.length > 0 && (
@@ -77,7 +77,7 @@ export default function SearchPage() {
               key={note.id}
               href={entityDetailHref('notes', note.id)}
               prefetch={false}
-              className="entity-card flex items-center gap-3 rounded-2xl p-3 transition-all active:scale-[0.99]"
+              className="entity-card flex items-center gap-3 rounded-xl p-3 transition-all"
             >
               <FileText className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -103,7 +103,7 @@ export default function SearchPage() {
               key={task.id}
               href={entityDetailHref('tasks', task.id)}
               prefetch={false}
-              className="entity-card flex items-center gap-3 rounded-2xl p-3 transition-all active:scale-[0.99]"
+              className="entity-card flex items-center gap-3 rounded-xl p-3 transition-all"
             >
               <CheckSquare className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -127,7 +127,7 @@ export default function SearchPage() {
               key={prompt.id}
               href={entityDetailHref('prompts', prompt.id)}
               prefetch={false}
-              className="entity-card flex items-center gap-3 rounded-2xl p-3 transition-all active:scale-[0.99]"
+              className="entity-card flex items-center gap-3 rounded-xl p-3 transition-all"
             >
               <Terminal className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -149,7 +149,7 @@ export default function SearchPage() {
               key={lesson.id}
               href={entityDetailHref('lessons', lesson.id)}
               prefetch={false}
-              className="entity-card flex items-center gap-3 rounded-2xl p-3 transition-all active:scale-[0.99]"
+              className="entity-card flex items-center gap-3 rounded-xl p-3 transition-all"
             >
               <BookOpen className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
