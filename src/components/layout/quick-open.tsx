@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { notesRepo, tasksRepo, promptsRepo, lessonsRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 import { FileText, CheckSquare, Terminal, BookOpen, ArrowRight } from 'lucide-react';
 import type { Note, Task, Prompt, Lesson } from '@/types';
@@ -81,16 +82,16 @@ export function QuickOpen() {
     setOpen(false);
     switch (result.type) {
       case 'note':
-        router.push(`/notes/${result.item.id}`);
+        router.push(entityDetailHref('notes', result.item.id));
         break;
       case 'task':
-        router.push(`/tasks/${result.item.id}`);
+        router.push(entityDetailHref('tasks', result.item.id));
         break;
       case 'prompt':
-        router.push(`/prompts/${result.item.id}`);
+        router.push(entityDetailHref('prompts', result.item.id));
         break;
       case 'lesson':
-        router.push(`/lessons/${result.item.id}`);
+        router.push(entityDetailHref('lessons', result.item.id));
         break;
     }
   };

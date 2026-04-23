@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { lessonsRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { EntityHubHeader } from '@/components/layout/entity-hub-header';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -97,8 +98,8 @@ export default function LessonsPage() {
               className={cn(
                 'rounded-md px-3 py-1.5 text-sm font-medium transition-colors capitalize',
                 filter === f
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  ? 'filter-chip-active'
+                  : 'filter-chip'
               )}
             >
               {f.replace('_', ' ')}
@@ -118,8 +119,8 @@ export default function LessonsPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-16 transition-colors">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
+        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-16 transition-colors">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/70 shadow-sm">
             <BookOpen className="h-6 w-6 text-muted-foreground" aria-hidden />
           </div>
           <h3 className="mt-4 font-medium">{query ? 'No matches found' : 'No lessons yet'}</h3>
@@ -142,10 +143,10 @@ export default function LessonsPage() {
             return (
               <Link
                 key={lesson.id}
-                href={`/lessons/${lesson.id}`}
+                href={entityDetailHref('lessons', lesson.id)}
                 prefetch={false}
                 role="listitem"
-                className="group flex flex-col rounded-lg border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]"
+                className="entity-card group flex flex-col rounded-2xl p-4 transition-all active:scale-[0.99]"
               >
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-medium">{lesson.title}</h3>

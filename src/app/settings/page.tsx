@@ -100,13 +100,13 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Customize your DiCenso experience</p>
+      <div className="premium-panel rounded-3xl p-6">
+        <h1 className="text-3xl font-extrabold tracking-[-0.05em]">Settings</h1>
+        <p className="text-sm font-medium text-muted-foreground">Customize your DiCenso experience</p>
       </div>
 
       {/* Appearance */}
-      <section className="space-y-4">
+      <section className="premium-panel rounded-3xl p-5 space-y-4">
         <h2 className="text-lg font-semibold">Appearance</h2>
         <div className="grid grid-cols-3 gap-3">
           {(['light', 'dark', 'system'] as const).map((t) => (
@@ -114,10 +114,10 @@ export default function SettingsPage() {
               key={t}
               onClick={() => setTheme(t)}
               className={cn(
-                'flex flex-col items-center gap-2 rounded-lg border p-4 transition-colors',
+                'entity-card flex flex-col items-center gap-2 rounded-2xl p-4 transition-all active:scale-[0.99]',
                 theme === t
-                  ? 'border-primary bg-primary/5'
-                  : 'hover:bg-accent'
+                  ? 'ring-2 ring-ring/35'
+                  : ''
               )}
             >
               {t === 'light' && <Sun className="h-5 w-5" />}
@@ -130,10 +130,10 @@ export default function SettingsPage() {
       </section>
 
       {/* Data Management */}
-      <section className="space-y-4">
+      <section className="premium-panel rounded-3xl p-5 space-y-4">
         <h2 className="text-lg font-semibold">Data</h2>
         <div className="space-y-3">
-          <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="entity-card flex items-center justify-between rounded-2xl p-4">
             <div>
               <p className="font-medium">Export Backup</p>
               <p className="text-sm text-muted-foreground">Download all your data as JSON</p>
@@ -144,7 +144,7 @@ export default function SettingsPage() {
             </Button>
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="entity-card flex items-center justify-between rounded-2xl p-4">
             <div>
               <p className="font-medium">Import Backup</p>
               <p className="text-sm text-muted-foreground">Restore from a previous backup</p>
@@ -165,7 +165,7 @@ export default function SettingsPage() {
             </label>
           </div>
 
-          <div className="rounded-lg border border-destructive/50 p-4">
+          <div className="rounded-2xl border border-destructive/45 bg-destructive/5 p-4 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-destructive">
                 <AlertTriangle className="h-5 w-5" />
@@ -196,7 +196,7 @@ export default function SettingsPage() {
       </section>
 
       {/* About */}
-      <section className="space-y-2">
+      <section className="premium-panel rounded-3xl p-5 space-y-2">
         <h2 className="text-lg font-semibold">About</h2>
         <p className="text-sm text-muted-foreground">
           DiCenso v0.1.0 — Your personal knowledge and execution operating system.

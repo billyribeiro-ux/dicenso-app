@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { notesRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -71,12 +72,12 @@ export default function BrainstormPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Brainstorm</h1>
-        <p className="text-muted-foreground">Freeform ideas and scratchpad</p>
+      <div className="premium-panel rounded-3xl p-6">
+        <h1 className="text-3xl font-extrabold tracking-[-0.05em]">Brainstorm</h1>
+        <p className="text-sm font-medium text-muted-foreground">Freeform ideas and scratchpad</p>
       </div>
 
-      <div className="rounded-lg border p-4 space-y-3">
+      <div className="premium-panel rounded-3xl p-5 space-y-3">
         <Input
           placeholder="Idea title..."
           value={title}
@@ -100,7 +101,7 @@ export default function BrainstormPage() {
         {items.map((item) => (
           <div
             key={item.id}
-            className="group relative flex flex-col rounded-lg border p-4 transition-colors hover:bg-accent"
+            className="entity-card group relative flex flex-col rounded-2xl p-4 transition-all active:scale-[0.99]"
           >
             <div className="flex items-start justify-between gap-2">
               <h3 className="font-medium">{item.title}</h3>
@@ -118,7 +119,7 @@ export default function BrainstormPage() {
               </p>
             )}
             <div className="mt-auto flex gap-2 pt-3">
-              <Link href={`/notes/${item.id}`} prefetch={false}>
+              <Link href={entityDetailHref('notes', item.id)} prefetch={false}>
                 <Button variant="ghost" size="sm" className="gap-1 h-7 px-2 text-xs">
                   <FileText className="h-3 w-3" />
                   Open
@@ -130,7 +131,7 @@ export default function BrainstormPage() {
       </div>
 
       {items.length === 0 && (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-20">
+        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-20">
           <Lightbulb className="h-10 w-10 text-muted-foreground" />
           <p className="mt-4 text-muted-foreground">No ideas yet. Start brainstorming above.</p>
         </div>

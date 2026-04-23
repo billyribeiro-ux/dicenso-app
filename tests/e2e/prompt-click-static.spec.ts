@@ -10,7 +10,8 @@ import path from 'path';
  * The test flow mirrors what a user does:
  *   1. Open /prompts/new, create a prompt via the app UI
  *   2. Navigate back to /prompts/, click the card
- *   3. Assert we land on /prompts/<id>, NOT /today
+ *   3. Assert static export uses the generated /prompts/_/ shell with ?id=...
+ *      and never falls through to /today
  */
 
 const PORT = 5150;
@@ -35,7 +36,7 @@ test.afterAll(async () => {
   server?.kill();
 });
 
-test('click on prompt card stays on /prompts/<id> (does not redirect to /today)', async ({
+test('click on prompt card opens the static detail shell instead of redirecting to /today', async ({
   page,
 }) => {
   test.setTimeout(60_000);
@@ -71,6 +72,7 @@ test('click on prompt card stays on /prompts/<id> (does not redirect to /today)'
   await card.waitFor({ state: 'visible', timeout: 8000 });
   const href = await card.getAttribute('href');
   console.log('[diag] target href:', href);
+  expect(href).toMatch(/^\/prompts\/_\/?\?id=.+/);
 
   // Step 3: Click the card
   await card.click();
@@ -82,7 +84,9 @@ test('click on prompt card stays on /prompts/<id> (does not redirect to /today)'
   console.log('[diag] tail console:\n' + consoleMsgs.slice(-20).join('\n'));
 
   // The real assertion
-  expect(url).toMatch(/\/prompts\//);
+  const finalUrl = new URL(url);
+  expect(finalUrl.pathname).toBe('/prompts/_/');
+  expect(finalUrl.searchParams.get('id')).toBeTruthy();
   expect(url).not.toMatch(/\/today\/?$/);
   expect(url).not.toMatch(/\/$/); // not root
 });

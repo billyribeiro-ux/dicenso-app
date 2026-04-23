@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import { DetailRouteFallback } from '@/components/layout/detail-route-fallback';
 import LessonDetailClientPage from './client-page';
 
 export function generateStaticParams() {
@@ -10,5 +12,9 @@ export default async function LessonDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <LessonDetailClientPage initialId={id} />;
+  return (
+    <Suspense fallback={<DetailRouteFallback label="Loading lesson" />}>
+      <LessonDetailClientPage initialId={id} />
+    </Suspense>
+  );
 }

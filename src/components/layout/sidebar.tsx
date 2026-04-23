@@ -63,10 +63,10 @@ function NavLink({
       onClick={onClick}
       aria-current={isActive ? 'page' : undefined}
       className={cn(
-        'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all active:scale-[0.98]',
+        'group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold tracking-[-0.01em] transition-all active:scale-[0.98]',
         isActive
-          ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm ring-1 ring-border/50'
-          : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+          ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-md ring-1 ring-border/50'
+          : 'text-sidebar-foreground/78 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
         collapsed && 'justify-center px-2 ring-0'
       )}
     >
@@ -200,7 +200,7 @@ export function Sidebar() {
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-3 left-3 z-50 flex h-9 w-9 items-center justify-center rounded-md border bg-background shadow-sm lg:hidden"
+        className="fixed top-3 left-3 z-50 flex h-9 w-9 items-center justify-center rounded-xl border bg-background/80 shadow-md backdrop-blur lg:hidden"
         aria-label="Toggle menu"
         aria-expanded={mobileOpen}
         aria-controls="main-sidebar"
@@ -213,7 +213,7 @@ export function Sidebar() {
         ref={sidebarRef}
         id="main-sidebar"
         className={cn(
-          'fixed top-0 left-0 z-50 flex h-screen flex-col border-r bg-sidebar-background transition-all duration-200 ease-in-out',
+          'fixed top-0 left-0 z-50 flex h-screen flex-col border-r border-sidebar-border/80 bg-sidebar-background/88 shadow-xl backdrop-blur-2xl transition-all duration-200 ease-in-out',
           collapsed ? 'w-[var(--spacing-sidebar-collapsed)]' : 'w-[var(--spacing-sidebar)]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
@@ -227,26 +227,34 @@ export function Sidebar() {
          */}
         <div
           data-tauri-drag-region
-          className="flex h-14 items-center border-b pr-3 pl-[var(--traffic-light-inset,12px)]"
+          className="flex h-14 items-center border-b border-sidebar-border/70 pr-3 pl-[var(--traffic-light-inset,12px)]"
         >
           {!collapsed && (
-            <Link
-              href="/today"
-              className="flex items-center gap-2 font-semibold text-sidebar-foreground"
-              style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+            <div
+              data-tauri-drag-region
+              className="flex min-w-0 flex-1 select-none items-center gap-2 font-semibold text-sidebar-foreground"
+              style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+              aria-label="DiCenso window drag region"
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-background">
-                <Command className="h-4 w-4" />
+              <div
+                data-tauri-drag-region
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-foreground text-background shadow-sm"
+              >
+                <Command data-tauri-drag-region className="h-4 w-4" />
               </div>
-              <span className="truncate">DiCenso</span>
-            </Link>
+              <span data-tauri-drag-region className="truncate">
+                DiCenso
+              </span>
+            </div>
           )}
           {collapsed && (
             <div
-              className="mx-auto flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-background"
-              style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+              data-tauri-drag-region
+              className="mx-auto flex h-7 w-7 items-center justify-center rounded-xl bg-foreground text-background shadow-sm"
+              style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+              aria-label="DiCenso window drag region"
             >
-              <Command className="h-4 w-4" />
+              <Command data-tauri-drag-region className="h-4 w-4" />
             </div>
           )}
         </div>
@@ -275,7 +283,7 @@ export function Sidebar() {
           ) : (
             <Button
               variant="default"
-              className="w-full justify-start gap-3 shadow-sm"
+              className="w-full justify-start gap-3 shadow-md"
               onClick={() => window.dispatchEvent(new CustomEvent('open-quick-capture'))}
             >
               <Inbox className="h-4 w-4 shrink-0" />
@@ -288,7 +296,7 @@ export function Sidebar() {
         </div>
 
         {/* Primary Nav */}
-        <nav className="flex-1 space-y-0.5 px-3 py-2" aria-label="Primary">
+        <nav className="flex-1 space-y-1 px-3 py-2" aria-label="Primary">
           {primaryNav.map((item) => (
             <NavLink
               key={item.href}
@@ -301,7 +309,7 @@ export function Sidebar() {
         </nav>
 
         {/* Secondary Nav */}
-        <nav className="space-y-0.5 border-t px-3 py-3" aria-label="Secondary">
+        <nav className="space-y-1 border-t border-sidebar-border/70 px-3 py-3" aria-label="Secondary">
           {secondaryNav.map((item) => (
             <NavLink
               key={item.href}
@@ -314,7 +322,7 @@ export function Sidebar() {
         </nav>
 
         {/* Collapse toggle */}
-        <div className="hidden border-t p-2 lg:block">
+        <div className="hidden border-t border-sidebar-border/70 p-2 lg:block">
           <button
             onClick={toggleCollapse}
             className="flex w-full items-center justify-center rounded-md p-1.5 text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"

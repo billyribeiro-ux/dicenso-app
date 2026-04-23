@@ -85,14 +85,14 @@ export function FocusTimer({ durationMinutes = 25, onComplete }: FocusTimerProps
   const progress = elapsed / durationSeconds;
 
   return (
-    <div className="flex flex-col items-center gap-4 rounded-lg border p-6">
+    <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-2">
         <Flame className={cn('h-5 w-5', running ? 'text-orange-500' : 'text-muted-foreground')} />
         <span className="text-sm font-medium">Focus Timer</span>
         {completed && <Badge variant="default" className="bg-green-600 text-white">Completed</Badge>}
       </div>
 
-      <div className="relative flex h-40 w-40 items-center justify-center">
+      <div className="relative flex h-40 w-40 items-center justify-center rounded-full bg-background/35 shadow-inner">
         <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100">
           <circle
             cx="50"
@@ -113,10 +113,10 @@ export function FocusTimer({ durationMinutes = 25, onComplete }: FocusTimerProps
             strokeLinecap="round"
             strokeDasharray={`${2 * Math.PI * 45}`}
             strokeDashoffset={`${2 * Math.PI * 45 * (1 - progress)}`}
-            className={cn('transition-all duration-1000', running ? 'text-primary' : 'text-muted-foreground')}
+            className={cn('transition-all duration-1000 drop-shadow-sm', running ? 'text-primary' : 'text-muted-foreground')}
           />
         </svg>
-        <div className="absolute text-3xl font-bold tabular-nums">
+        <div className="absolute text-3xl font-extrabold tracking-[-0.04em] tabular-nums">
           {minutes}:{seconds.toString().padStart(2, '0')}
         </div>
       </div>

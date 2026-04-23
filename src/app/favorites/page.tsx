@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { notesRepo, promptsRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { formatRelative } from '@/lib/utils';
 import { Star, FileText, Terminal } from 'lucide-react';
 import type { Note, Prompt } from '@/types';
@@ -28,9 +29,9 @@ export default function FavoritesPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Favorites</h1>
-        <p className="text-muted-foreground">Your starred notes and prompts</p>
+      <div className="premium-panel rounded-3xl p-6">
+        <h1 className="text-3xl font-extrabold tracking-[-0.05em]">Favorites</h1>
+        <p className="text-sm font-medium text-muted-foreground">Your starred notes and prompts</p>
       </div>
 
       <section className="space-y-3">
@@ -42,9 +43,9 @@ export default function FavoritesPage() {
             {notes.map((note) => (
               <Link
                 key={note.id}
-                href={`/notes/${note.id}`}
+                href={entityDetailHref('notes', note.id)}
                 prefetch={false}
-                className="rounded-lg border p-4 transition-colors hover:bg-accent"
+                className="entity-card rounded-2xl p-4 transition-all active:scale-[0.99]"
               >
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
@@ -73,9 +74,9 @@ export default function FavoritesPage() {
             {prompts.map((prompt) => (
               <Link
                 key={prompt.id}
-                href={`/prompts/${prompt.id}`}
+                href={entityDetailHref('prompts', prompt.id)}
                 prefetch={false}
-                className="block rounded-lg border p-4 transition-colors hover:bg-accent/60"
+                className="entity-card block rounded-2xl p-4 transition-all active:scale-[0.99]"
               >
                 <div className="flex items-center gap-2">
                   <Terminal className="h-4 w-4 text-muted-foreground" />

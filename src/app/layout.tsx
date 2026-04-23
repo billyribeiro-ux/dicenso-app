@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import { Manrope } from 'next/font/google';
 import './globals.css';
 import { AppProviders } from '@/components/providers/app-providers';
 import { Sidebar } from '@/components/layout/sidebar';
@@ -8,7 +8,7 @@ import { QuickCapture } from '@/components/layout/quick-capture';
 import { QuickOpen } from '@/components/layout/quick-open';
 import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ['latin'],
   variable: '--font-sans',
 });
@@ -34,7 +34,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${manrope.variable} font-sans antialiased`}>
         <AppProviders>
           <a
             href="#main-content"
@@ -44,23 +44,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </a>
           {/*
            * Top drag strip for Tauri (macOS `titleBarStyle: Overlay`).
-           * Covers only the main-content band (to the right of the sidebar),
-           * at a z-index BELOW the sidebar so sidebar interactions win, and
-           * above normal content. 28px ≈ macOS traffic-light height.
+           * Covers the top content band. On desktop it starts to the right of
+           * the sidebar; on narrower windows it spans the full window because
+           * the sidebar is off-canvas. 28px ≈ macOS traffic-light height.
            */}
           <div
             data-tauri-drag-region
             aria-hidden
-            className="fixed right-0 top-0 z-30 h-7 lg:left-[var(--spacing-sidebar-current)]"
+            className="fixed top-0 right-0 left-0 z-30 h-7 lg:left-[var(--spacing-sidebar-current)]"
             style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
           />
           <Sidebar />
           <main
             id="main-content"
-            className="min-h-screen pt-7 transition-all duration-200 lg:pl-[var(--spacing-sidebar-current)]"
+            className="relative min-h-screen pt-7 transition-all duration-200 lg:pl-[var(--spacing-sidebar-current)]"
           >
             <ErrorBoundary>
-              <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+              <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-10">
                 {children}
               </div>
             </ErrorBoundary>

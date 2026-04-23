@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { promptsRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -86,8 +87,8 @@ export default function PromptsPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-16 transition-colors">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
+        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-16 transition-colors">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/70 shadow-sm">
             <Terminal className="h-6 w-6 text-muted-foreground" aria-hidden />
           </div>
           <h3 className="mt-4 font-medium">{query ? 'No matches found' : 'No prompts yet'}</h3>
@@ -113,7 +114,7 @@ export default function PromptsPage() {
             <div
               key={prompt.id}
               role="listitem"
-              className="group relative flex flex-col rounded-lg border bg-card transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]"
+              className="entity-card group relative flex flex-col rounded-2xl transition-all active:scale-[0.99]"
             >
               {/*
                * Never nest <button> inside <a>. Browsers "repair" invalid markup and
@@ -121,7 +122,7 @@ export default function PromptsPage() {
                * Stretched link + pointer-events keeps card navigation and icon actions correct.
                */}
               <Link
-                href={`/prompts/${prompt.id}`}
+                href={entityDetailHref('prompts', prompt.id)}
                 prefetch={false}
                 className="absolute inset-0 z-0 rounded-lg"
                 aria-label={`Open prompt: ${prompt.title}`}

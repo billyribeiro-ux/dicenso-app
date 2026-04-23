@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import { DetailRouteFallback } from '@/components/layout/detail-route-fallback';
 import PromptDetailClientPage from './client-page';
 
 /**
@@ -15,5 +17,9 @@ export default async function PromptDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <PromptDetailClientPage initialId={id} />;
+  return (
+    <Suspense fallback={<DetailRouteFallback label="Loading prompt" />}>
+      <PromptDetailClientPage initialId={id} />
+    </Suspense>
+  );
 }

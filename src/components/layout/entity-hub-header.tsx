@@ -15,14 +15,15 @@ type EntityHubHeaderProps = {
  */
 export function EntityHubHeader({ title, subtitle, newHref, newLabel }: EntityHubHeaderProps) {
   return (
-    <header className="flex flex-col gap-3 border-b border-border/70 pb-4 sm:flex-row sm:items-center sm:justify-between">
+    <header className="premium-panel relative overflow-hidden rounded-3xl p-5 sm:flex sm:items-center sm:justify-between sm:gap-4">
+      <div className="pointer-events-none absolute -top-20 right-8 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
       <div className="min-w-0 space-y-0.5">
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        <p className="text-sm text-muted-foreground" aria-live="polite">
+        <h1 className="text-2xl font-bold tracking-[-0.04em] sm:text-3xl">{title}</h1>
+        <p className="text-sm font-medium text-muted-foreground" aria-live="polite">
           {subtitle}
         </p>
       </div>
-      <Button variant="secondary" className="w-full gap-2 sm:w-auto shrink-0" asChild>
+      <Button variant="default" className="mt-4 w-full gap-2 sm:mt-0 sm:w-auto shrink-0" asChild>
         <Link href={newHref}>
           <Plus className="h-4 w-4 shrink-0" aria-hidden />
           {newLabel}

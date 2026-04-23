@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { tasksRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { EntityHubHeader } from '@/components/layout/entity-hub-header';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -97,8 +98,8 @@ export default function TasksPage() {
               className={cn(
                 'rounded-md px-3 py-1.5 text-sm font-medium transition-colors capitalize',
                 filter === f
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  ? 'filter-chip-active'
+                  : 'filter-chip'
               )}
             >
               {f.replace('_', ' ')}
@@ -114,8 +115,8 @@ export default function TasksPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-16 transition-colors">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
+        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-16 transition-colors">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/70 shadow-sm">
             <CheckSquare className="h-6 w-6 text-muted-foreground" aria-hidden />
           </div>
           <h3 className="mt-4 font-medium">{query ? 'No matches found' : 'No tasks yet'}</h3>
@@ -138,12 +139,12 @@ export default function TasksPage() {
               key={task.id}
               role="listitem"
               className={cn(
-                'relative flex items-center gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]',
-                task.status === 'done' && 'opacity-60 bg-muted/50 hover:bg-muted'
+                'entity-card relative flex items-center gap-3 rounded-2xl p-3.5 transition-all active:scale-[0.99]',
+                task.status === 'done' && 'opacity-60'
               )}
             >
               <Link
-                href={`/tasks/${task.id}`}
+                href={entityDetailHref('tasks', task.id)}
                 prefetch={false}
                 className="absolute inset-0 z-0 rounded-lg"
                 aria-label={`Open task: ${task.title}`}

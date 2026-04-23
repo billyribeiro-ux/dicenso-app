@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { notesRepo, tasksRepo, promptsRepo, lessonsRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, FileText, CheckSquare, Terminal, BookOpen } from 'lucide-react';
@@ -44,9 +45,9 @@ export default function SearchPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Search</h1>
-        <p className="text-muted-foreground">
+      <div className="premium-panel rounded-3xl p-6">
+        <h1 className="text-3xl font-extrabold tracking-[-0.05em]">Search</h1>
+        <p className="text-sm font-medium text-muted-foreground">
           {query.trim().length < 2 ? 'Type to search across your vault' : `${total} results`}
         </p>
       </div>
@@ -63,7 +64,7 @@ export default function SearchPage() {
       </div>
 
       {query.trim().length >= 2 && total === 0 && (
-        <div className="py-12 text-center text-muted-foreground">No results found</div>
+        <div className="empty-state rounded-3xl py-12 text-center text-muted-foreground">No results found</div>
       )}
 
       {results.notes.length > 0 && (
@@ -74,9 +75,9 @@ export default function SearchPage() {
           {results.notes.map((note) => (
             <Link
               key={note.id}
-              href={`/notes/${note.id}`}
+              href={entityDetailHref('notes', note.id)}
               prefetch={false}
-              className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent"
+              className="entity-card flex items-center gap-3 rounded-2xl p-3 transition-all active:scale-[0.99]"
             >
               <FileText className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -100,9 +101,9 @@ export default function SearchPage() {
           {results.tasks.map((task) => (
             <Link
               key={task.id}
-              href={`/tasks/${task.id}`}
+              href={entityDetailHref('tasks', task.id)}
               prefetch={false}
-              className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
+              className="entity-card flex items-center gap-3 rounded-2xl p-3 transition-all active:scale-[0.99]"
             >
               <CheckSquare className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -124,9 +125,9 @@ export default function SearchPage() {
           {results.prompts.map((prompt) => (
             <Link
               key={prompt.id}
-              href={`/prompts/${prompt.id}`}
+              href={entityDetailHref('prompts', prompt.id)}
               prefetch={false}
-              className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
+              className="entity-card flex items-center gap-3 rounded-2xl p-3 transition-all active:scale-[0.99]"
             >
               <Terminal className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
@@ -146,9 +147,9 @@ export default function SearchPage() {
           {results.lessons.map((lesson) => (
             <Link
               key={lesson.id}
-              href={`/lessons/${lesson.id}`}
+              href={entityDetailHref('lessons', lesson.id)}
               prefetch={false}
-              className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/60"
+              className="entity-card flex items-center gap-3 rounded-2xl p-3 transition-all active:scale-[0.99]"
             >
               <BookOpen className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">

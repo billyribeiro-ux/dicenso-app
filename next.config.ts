@@ -41,6 +41,9 @@ const securityHeaders = [
 const baseConfig: NextConfig = {
   reactStrictMode: true,
   images: { unoptimized: true },
+  env: {
+    NEXT_PUBLIC_STATIC_EXPORT: isStaticExport ? '1' : '0',
+  },
   typescript: { ignoreBuildErrors: false },
   // Hide the Next.js dev tools indicator ("nextjs-portal" floating badge)
   // so it doesn't sit in the bottom-left of the window during development.

@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { TiptapEditor } from '@/components/editor/tiptap-editor';
 import { notesRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { slugify } from '@/lib/utils';
@@ -46,7 +47,7 @@ export default function NewNotePage() {
       });
       localStorage.removeItem('dicenso-note-draft');
       toast.success('Note saved');
-      router.push(`/notes/${note.id}`);
+      router.push(entityDetailHref('notes', note.id));
     } catch {
       toast.error('Failed to save note');
     } finally {

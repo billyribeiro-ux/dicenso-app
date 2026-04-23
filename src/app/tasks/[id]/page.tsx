@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import { DetailRouteFallback } from '@/components/layout/detail-route-fallback';
 import TaskDetailClientPage from './client-page';
 
 export function generateStaticParams() {
@@ -10,5 +12,9 @@ export default async function TaskDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <TaskDetailClientPage initialId={id} />;
+  return (
+    <Suspense fallback={<DetailRouteFallback label="Loading task" />}>
+      <TaskDetailClientPage initialId={id} />
+    </Suspense>
+  );
 }

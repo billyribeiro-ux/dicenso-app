@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { notesRepo } from '@/lib/repositories';
+import { entityDetailHref } from '@/lib/entity-routes';
 import { formatRelative, cn } from '@/lib/utils';
 import { EntityHubHeader } from '@/components/layout/entity-hub-header';
 import { Input } from '@/components/ui/input';
@@ -119,8 +120,8 @@ export default function NotesPage() {
               className={cn(
                 'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
                 filter === f
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  ? 'filter-chip-active'
+                  : 'filter-chip'
               )}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -140,8 +141,8 @@ export default function NotesPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/30 py-16 transition-colors">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
+        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-16 transition-colors">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/70 shadow-sm">
             <FileText className="h-6 w-6 text-muted-foreground" aria-hidden />
           </div>
           <h3 className="mt-4 font-medium">{query ? 'No matches found' : 'No notes yet'}</h3>
@@ -163,10 +164,10 @@ export default function NotesPage() {
             <div
               key={note.id}
               role="listitem"
-              className="group relative flex flex-col rounded-lg border bg-card transition-all hover:border-primary/20 hover:shadow-sm active:scale-[0.99]"
+              className="entity-card group relative flex flex-col rounded-2xl transition-all active:scale-[0.99]"
             >
               <Link
-                href={`/notes/${note.id}`}
+                href={entityDetailHref('notes', note.id)}
                 prefetch={false}
                 className="absolute inset-0 z-0 rounded-lg"
                 aria-label={`Open note: ${note.title}`}
