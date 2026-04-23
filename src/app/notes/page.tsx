@@ -141,8 +141,8 @@ export default function NotesPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="empty-state flex flex-col items-center justify-center rounded-xl py-16 transition-colors">
-          <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted shadow-sm">
+        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-16 transition-colors">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/70 shadow-sm">
             <FileText className="h-6 w-6 text-muted-foreground" aria-hidden />
           </div>
           <h3 className="mt-4 font-medium">{query ? 'No matches found' : 'No notes yet'}</h3>
@@ -164,7 +164,7 @@ export default function NotesPage() {
             <div
               key={note.id}
               role="listitem"
-              className="entity-card group relative flex flex-col rounded-xl transition-all"
+              className="entity-card group relative flex flex-col rounded-2xl transition-all active:scale-[0.99]"
             >
               <Link
                 href={entityDetailHref('notes', note.id)}

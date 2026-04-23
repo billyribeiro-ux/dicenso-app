@@ -4,58 +4,53 @@
   /* Color tokens */
   --color-background: #fbfaf7;
   --color-foreground: #17120c;
-  --color-card: #ffffff;
-  --color-card-foreground: #17120c;
-  --color-popover: #ffffff;
-  --color-popover-foreground: #17120c;
-  --color-primary: #17120c;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #f4ecdf;
-  --color-secondary-foreground: #17120c;
   --color-muted: #f1ece3;
   --color-muted-foreground: #796f64;
-  --color-accent: #f4ecdf;
-  --color-accent-foreground: #17120c;
+  --color-accent: #ede4d6;
+  --color-accent-foreground: #201711;
+  --color-primary: #22180f;
+  --color-primary-foreground: #fafafa;
+  --color-secondary: #f4ecdf;
+  --color-secondary-foreground: #21170f;
   --color-destructive: #ef4444;
-  --color-destructive-foreground: #ffffff;
+  --color-destructive-foreground: #fafafa;
   --color-success: #22c55e;
-  --color-success-foreground: #ffffff;
+  --color-success-foreground: #fafafa;
   --color-warning: #f59e0b;
-  --color-warning-foreground: #ffffff;
+  --color-warning-foreground: #fafafa;
   --color-border: #e2d8c9;
+  --color-ring: #8b5e34;
   --color-input: #e2d8c9;
-  --color-ring: #17120c;
+  --color-popover: #fffdf9;
+  --color-popover-foreground: #17120c;
 
   /* Sidebar */
   --color-sidebar-background: #f5efe5;
-  --color-sidebar-foreground: #17120c;
+  --color-sidebar-foreground: #201711;
   --color-sidebar-border: #ded1bf;
   --color-sidebar-accent: #eadfce;
-  --color-sidebar-accent-foreground: #17120c;
-  --color-sidebar-ring: #17120c;
+  --color-sidebar-accent-foreground: #201711;
+  --color-sidebar-ring: #8b5e34;
 
   /* Typography */
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   /* Spacing */
-  --spacing-sidebar: 260px;
+  --spacing-sidebar: 280px;
   --spacing-sidebar-collapsed: 64px;
 
   /* Radius */
-  --radius: 0.5rem;
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: calc(var(--radius));
-  --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 6px);
-  --radius-2xl: calc(var(--radius) + 10px);
-  --radius-3xl: calc(var(--radius) + 16px);
-  
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 2px 0 rgb(41 28 16 / 0.06), 0 1px 0 rgb(255 255 255 / 0.7) inset;
+  --shadow-md: 0 10px 30px -22px rgb(41 28 16 / 0.45), 0 1px 0 rgb(255 255 255 / 0.74) inset;
+  --shadow-lg: 0 22px 60px -36px rgb(41 28 16 / 0.56), 0 1px 0 rgb(255 255 255 / 0.78) inset;
+  --shadow-xl: 0 32px 90px -46px rgb(41 28 16 / 0.62), 0 1px 0 rgb(255 255 255 / 0.82) inset;
 }
 
 @layer base {
@@ -76,6 +71,11 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 16% 8%, rgb(194 128 76 / 0.18), transparent 28rem),
+      radial-gradient(circle at 86% 12%, rgb(78 104 125 / 0.12), transparent 26rem),
+      linear-gradient(180deg, rgb(255 255 255 / 0.72), rgb(245 239 229 / 0.62));
+    background-attachment: fixed;
   }
 
   * {
@@ -83,92 +83,132 @@
   }
 
   ::selection {
-    background-color: var(--color-primary);
-    color: var(--color-primary-foreground);
+    background-color: rgb(0 0 0 / 0.1);
   }
 }
 
 @layer base {
+  /* Dark mode via class */
   .dark {
-    --color-background: #0a0a0a;
-    --color-foreground: #fafafa;
-    --color-card: #171717;
-    --color-card-foreground: #fafafa;
-    --color-popover: #171717;
-    --color-popover-foreground: #fafafa;
-    --color-primary: #fafafa;
-    --color-primary-foreground: #0a0a0a;
-    --color-secondary: #262626;
-    --color-secondary-foreground: #fafafa;
-    --color-muted: #262626;
-    --color-muted-foreground: #a3a3a3;
-    --color-accent: #262626;
-    --color-accent-foreground: #fafafa;
+    --color-background: #10100f;
+    --color-foreground: #f5efe7;
+    --color-muted: #201d19;
+    --color-muted-foreground: #a99d91;
+    --color-accent: #2b261f;
+    --color-accent-foreground: #f8f2eb;
+    --color-primary: #f5efe7;
+    --color-primary-foreground: #17120c;
+    --color-secondary: #28231d;
+    --color-secondary-foreground: #f5efe7;
     --color-destructive: #ef4444;
     --color-destructive-foreground: #fafafa;
     --color-success: #22c55e;
     --color-success-foreground: #fafafa;
     --color-warning: #f59e0b;
     --color-warning-foreground: #fafafa;
-    --color-border: #262626;
-    --color-input: #262626;
-    --color-ring: #d4d4d4;
-
-    --color-sidebar-background: #171717;
-    --color-sidebar-foreground: #fafafa;
-    --color-sidebar-border: #262626;
-    --color-sidebar-accent: #262626;
-    --color-sidebar-accent-foreground: #fafafa;
-    --color-sidebar-ring: #d4d4d4;
+    --color-border: #302b24;
+    --color-ring: #caa276;
+    --color-input: #342e26;
+    --color-popover: #181512;
+    --color-popover-foreground: #f5efe7;
+    --color-sidebar-background: #16130f;
+    --color-sidebar-foreground: #f5efe7;
+    --color-sidebar-border: #302920;
+    --color-sidebar-accent: #28221b;
+    --color-sidebar-accent-foreground: #f8f2eb;
+    --color-sidebar-ring: #caa276;
   }
 }
 
 @layer components {
   .premium-panel {
-    background-color: var(--color-card);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
-    color: var(--color-card-foreground);
+    border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+    background:
+      linear-gradient(135deg, rgb(255 255 255 / 0.74), rgb(255 255 255 / 0.34)),
+      color-mix(in srgb, var(--color-popover) 84%, transparent);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(20px) saturate(1.18);
+  }
+
+  .dark .premium-panel {
+    background:
+      linear-gradient(135deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.03)),
+      color-mix(in srgb, var(--color-popover) 88%, transparent);
   }
 
   .entity-card {
-    background-color: var(--color-card);
-    border: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
+    background:
+      linear-gradient(145deg, rgb(255 255 255 / 0.68), rgb(255 255 255 / 0.28)),
+      color-mix(in srgb, var(--color-popover) 88%, transparent);
     box-shadow: var(--shadow-sm);
-    transition: all 0.2s ease-in-out;
+    backdrop-filter: blur(14px) saturate(1.08);
+  }
+
+  .dark .entity-card {
+    background:
+      linear-gradient(145deg, rgb(255 255 255 / 0.075), rgb(255 255 255 / 0.025)),
+      color-mix(in srgb, var(--color-popover) 90%, transparent);
+  }
+
+  .entity-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.72), transparent);
+    opacity: 0.72;
+    pointer-events: none;
   }
 
   .entity-card:hover {
-    border-color: var(--color-ring);
+    border-color: color-mix(in srgb, var(--color-ring) 32%, var(--color-border));
     box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
   }
 
   .empty-state {
-    border: 1px dashed var(--color-border);
-    background-color: var(--color-muted);
-    color: var(--color-muted-foreground);
+    border: 1px dashed color-mix(in srgb, var(--color-border) 76%, transparent);
+    background:
+      radial-gradient(circle at 50% 0%, rgb(255 255 255 / 0.72), transparent 18rem),
+      color-mix(in srgb, var(--color-muted) 44%, transparent);
+    box-shadow: var(--shadow-sm);
   }
 
   .filter-chip {
     border: 1px solid transparent;
-    background-color: var(--color-muted);
+    background: color-mix(in srgb, var(--color-muted) 68%, transparent);
     color: var(--color-muted-foreground);
-    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.58) inset;
   }
 
   .filter-chip:hover {
-    background-color: var(--color-accent);
+    background: var(--color-accent);
     color: var(--color-accent-foreground);
   }
 
   .filter-chip-active {
-    background-color: var(--color-primary);
+    border-color: color-mix(in srgb, var(--color-ring) 28%, transparent);
+    background: var(--color-primary);
     color: var(--color-primary-foreground);
     box-shadow: var(--shadow-sm);
   }
 }
 
 @layer base {
+  /*
+   * Next.js injects a <nextjs-portal> custom element in dev mode as a mount
+   * point for the error overlay and dev-tools indicator. By default the host
+   * sits in the normal document flow, which caused a ~650px layout shift in
+   * our app. We defensively pin it with `!important` so Next's own inline
+   * styles can't push it back into flow, while keeping children fully
+   * interactive (error overlay still works).
+   *
+   * This is a no-op in the Tauri/static-export bundle because Next doesn't
+   * inject `<nextjs-portal>` in production — the selector simply won't match.
+   */
   nextjs-portal {
     position: fixed !important;
     top: 0 !important;
@@ -182,6 +222,7 @@
     pointer-events: auto;
   }
 
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

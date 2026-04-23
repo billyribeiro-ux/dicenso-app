@@ -72,12 +72,12 @@ export default function BrainstormPage() {
 
   return (
     <div className="space-y-6">
-      <div className="premium-panel rounded-xl p-6">
+      <div className="premium-panel rounded-3xl p-6">
         <h1 className="text-3xl font-extrabold tracking-[-0.05em]">Brainstorm</h1>
         <p className="text-sm font-medium text-muted-foreground">Freeform ideas and scratchpad</p>
       </div>
 
-      <div className="premium-panel rounded-xl p-5 space-y-3">
+      <div className="premium-panel rounded-3xl p-5 space-y-3">
         <Input
           placeholder="Idea title..."
           value={title}
@@ -101,7 +101,7 @@ export default function BrainstormPage() {
         {items.map((item) => (
           <div
             key={item.id}
-            className="entity-card group relative flex flex-col rounded-xl p-4 transition-all"
+            className="entity-card group relative flex flex-col rounded-2xl p-4 transition-all active:scale-[0.99]"
           >
             <div className="flex items-start justify-between gap-2">
               <h3 className="font-medium">{item.title}</h3>
@@ -131,7 +131,7 @@ export default function BrainstormPage() {
       </div>
 
       {items.length === 0 && (
-        <div className="empty-state flex flex-col items-center justify-center rounded-xl py-20">
+        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-20">
           <Lightbulb className="h-10 w-10 text-muted-foreground" />
           <p className="mt-4 text-muted-foreground">No ideas yet. Start brainstorming above.</p>
         </div>

@@ -15,7 +15,7 @@ type EntityHubHeaderProps = {
  */
 export function EntityHubHeader({ title, subtitle, newHref, newLabel }: EntityHubHeaderProps) {
   return (
-    <header className="premium-panel relative overflow-hidden rounded-xl p-5 sm:flex sm:items-center sm:justify-between sm:gap-4">
+    <header className="premium-panel relative overflow-hidden rounded-3xl p-5 sm:flex sm:items-center sm:justify-between sm:gap-4">
       <div className="pointer-events-none absolute -top-20 right-8 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
       <div className="min-w-0 space-y-0.5">
         <h1 className="text-2xl font-bold tracking-[-0.04em] sm:text-3xl">{title}</h1>

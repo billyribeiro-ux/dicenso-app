@@ -115,8 +115,8 @@ export default function TasksPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="empty-state flex flex-col items-center justify-center rounded-xl py-16 transition-colors">
-          <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted shadow-sm">
+        <div className="empty-state flex flex-col items-center justify-center rounded-3xl py-16 transition-colors">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/70 shadow-sm">
             <CheckSquare className="h-6 w-6 text-muted-foreground" aria-hidden />
           </div>
           <h3 className="mt-4 font-medium">{query ? 'No matches found' : 'No tasks yet'}</h3>
@@ -139,7 +139,7 @@ export default function TasksPage() {
               key={task.id}
               role="listitem"
               className={cn(
-                'entity-card relative flex items-center gap-3 rounded-xl p-4 transition-all',
+                'entity-card relative flex items-center gap-3 rounded-2xl p-3.5 transition-all active:scale-[0.99]',
                 task.status === 'done' && 'opacity-60'
               )}
             >
